@@ -2,22 +2,33 @@ project(pvr.mythtv)
 
 cmake_minimum_required(VERSION 2.6)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR})
+set(APP_VERSION_MAJOR "15" CACHE string "Application version major")
+set(APP_VERSION_MINOR "0" CACHE string "Application verison minor")
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
+
+include(addon-helpers)
 
 enable_language(CXX)
 enable_language(C)
 
-find_package(kodi REQUIRED)
-find_package(kodiplatform REQUIRED)
-
-include_directories(${kodiplatform_INCLUDE_DIRS}
-                    ${KODI_INCLUDE_DIR}
+include_directories(${CMAKE_BINARY_DIR}/include
                     ${PROJECT_SOURCE_DIR}/lib/cppmyth/src)
 
 add_definitions(-DUSE_DEMUX -D__STDC_FORMAT_MACROS)
 
 if(NOT WIN32)
-  add_options(ALL_LANGUAGES ALL_BUILDS "-fPIC")
+  add_definitions("-fPIC")
+else()
+  add_definitions(-DTARGET_WINDOWS -D_WINSOCKAPI_
+    -D_USE_32BIT_TIME_T -D_CRT_SECURE_NO_WARNINGS
+    -D_SCL_SECURE_NO_WARNINGS -D__STDC_CONSTANT_MACROS)
+  set(CMAKE_CXX_FLAGS "/W3 /Od /RTC1 /EHsc")
+  set(CMAKE_CXX_FLAGS_RELEASE "/MT")
+  set(CMAKE_CXX_FLAGS_DEBUG "/MTd")
+  set(CMAKE_C_FLAGS "/W3")
+  set(CMAKE_C_FLAGS_RELEASE "/MT")
+  set(CMAKE_C_FLAGS_DEBUG "/MTd")
 endif()
 
 set(MYTHTV_SOURCES src/avinfo.cpp
@@ -46,14 +57,14 @@ set(MYTHTV_SOURCES src/avinfo.cpp
                    src/fileOps.cpp)
 
 add_subdirectory(lib/cppmyth)
+add_subdirectory(kodi)
 
-set(DEPLIBS ${kodiplatform_LIBRARIES} cppmyth)
+set(DEPLIBS kodiplatform cppmyth)
 if (WIN32)
   list(APPEND DEPLIBS ws2_32)
 else()
   list(APPEND DEPLIBS m)
 endif()
-
 
 unset(__link_flags)
 # Check if the linker supports version script (i.e. is GNU ld)
@@ -69,7 +80,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 if(__link_flags)
-  add_options(ALL_LANGUAGES ALL_BUILDS "${__link_flags}")
+  add_definitions("${__link_flags}")
 endif()
 
 set(BUILD_SHARED_LIBS ON)
