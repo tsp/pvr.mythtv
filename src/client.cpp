@@ -689,7 +689,6 @@ PVR_ERROR GetAddonCapabilities(PVR_ADDON_CAPABILITIES *pCapabilities)
     pCapabilities->bHandlesDemuxing               = g_bDemuxing;
 
     pCapabilities->bSupportsRecordings            = true;
-    pCapabilities->bSupportsRecordingsUndelete    = true;
     pCapabilities->bSupportsRecordingPlayCount    = true;
     pCapabilities->bSupportsLastPlayedPosition    = false;
     pCapabilities->bSupportsRecordingEdl          = true;
@@ -716,11 +715,6 @@ const char *GetConnectionString()
   return g_client->GetConnectionString();
 }
 
-const char *GetBackendHostname(void)
-{
-  return g_szMythHostname.c_str();
-}
-
 PVR_ERROR GetDriveSpace(long long *iTotal, long long *iUsed)
 {
   if (g_client == NULL)
@@ -729,7 +723,7 @@ PVR_ERROR GetDriveSpace(long long *iTotal, long long *iUsed)
   return g_client->GetDriveSpace(iTotal, iUsed);
 }
 
-PVR_ERROR OpenDialogChannelScan()
+PVR_ERROR DialogChannelScan()
 {
   return PVR_ERROR_FAILED;
 }
@@ -797,13 +791,13 @@ PVR_ERROR MoveChannel(const PVR_CHANNEL &channel)
   return PVR_ERROR_NOT_IMPLEMENTED;
 }
 
-PVR_ERROR OpenDialogChannelSettings(const PVR_CHANNEL &channel)
+PVR_ERROR DialogChannelSettings(const PVR_CHANNEL &channel)
 {
   (void)channel;
   return PVR_ERROR_NOT_IMPLEMENTED;
 }
 
-PVR_ERROR OpenDialogChannelAdd(const PVR_CHANNEL &channel)
+PVR_ERROR DialogAddChannel(const PVR_CHANNEL &channel)
 {
   (void)channel;
   return PVR_ERROR_NOT_IMPLEMENTED;
@@ -837,21 +831,19 @@ PVR_ERROR GetChannelGroupMembers(ADDON_HANDLE handle, const PVR_CHANNEL_GROUP &g
  * PVR Recording Functions
  */
 
-int GetRecordingsAmount(bool deleted)
+int GetRecordingsAmount(void)
 {
   if (g_client == NULL)
     return 0;
-  if (deleted)
-    return g_client->GetDeletedRecordingsAmount();
+
   return g_client->GetRecordingsAmount();
 }
 
-PVR_ERROR GetRecordings(ADDON_HANDLE handle, bool deleted)
+PVR_ERROR GetRecordings(ADDON_HANDLE handle)
 {
   if (g_client == NULL)
     return PVR_ERROR_SERVER_ERROR;
-  if (deleted)
-    return g_client->GetDeletedRecordings(handle);
+
   return g_client->GetRecordings(handle);
 }
 
@@ -900,19 +892,6 @@ PVR_ERROR GetRecordingEdl(const PVR_RECORDING &recording, PVR_EDL_ENTRY entries[
   return g_client->GetRecordingEdl(recording, entries, size);
 }
 
-PVR_ERROR UndeleteRecording(const PVR_RECORDING& recording)
-{
-  if (g_client == NULL)
-    return PVR_ERROR_SERVER_ERROR;
-  return g_client->UndeleteRecording(recording);
-}
-
-PVR_ERROR DeleteAllRecordingsFromTrash()
-{
-  if (g_client == NULL)
-    return PVR_ERROR_SERVER_ERROR;
-  return g_client->PurgeDeletedRecordings();
-}
 
 /*
  * PVR Timer Functions
