@@ -1,23 +1,22 @@
-Source: kodi-pvr-mythtv
+Source: kodi-pvr-mythtv-helix
 Priority: extra
 Maintainer: janbar <jlbarriere68@gmail.com>
-Build-Depends: debhelper (>= 9.0.0), cmake, kodi-pvr-dev,
-               libkodiplatform-dev, kodi-addon-dev
+Build-Depends: debhelper (>= 9.0.0), cmake
 Standards-Version: 3.9.4
 Section: libs
-Homepage: http://kodi.tv
+Homepage: https://github.com/janbar/pvr.mythtv
 
-Package: kodi-pvr-mythtv
+Package: kodi-pvr-mythtv-helix
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: MythTV PVR for Kodi
- MythTV PVR for Kodi
+ MythTV PVR addon for Kodi
 
-Package: kodi-pvr-mythtv-dbg
-Section: libs
+Package: kodi-pvr-mythtv-helix-dbg
+Section: debug
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${misc:Depends}
 Description: debug symbols for MythTV PVR for Kodi
- debug symbols for MythTV PVR for Kodi
+ debug symbols for MythTV PVR addon for Kodi
 
