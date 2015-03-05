@@ -22,7 +22,7 @@
 
 #include "categories.h"
 #include "client.h"
-#include <kodi/os.h>
+#include <xbmc/os.h>
 
 #define CATEGORIES_FILENAME       "eit_categories.txt"
 #define CATEGORIES_MAXLINESIZE    255

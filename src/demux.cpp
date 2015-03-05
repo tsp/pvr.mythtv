@@ -20,9 +20,9 @@
  *
  */
 
-#include <kodi/os.h>
-#include <kodi/libXBMC_pvr.h>
-#include <kodi/xbmc_codec_types.h>
+#include <xbmc/os.h>
+#include <xbmc/libXBMC_pvr.h>
+#include <xbmc/xbmc_codec_types.h>
 
 #include "demux.h"
 #include "demuxer/debug.h"

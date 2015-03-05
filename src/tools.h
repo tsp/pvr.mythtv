@@ -21,7 +21,7 @@
  *
  */
 
-#include <kodi/os.h>
+#include <xbmc/os.h>
 
 #ifdef __WINDOWS__
 static inline struct tm *localtime_r(const time_t  *clock, struct tm *result)
