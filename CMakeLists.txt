@@ -2,7 +2,7 @@ project(pvr.mythtv)
 
 cmake_minimum_required(VERSION 2.6)
 
-set(APP_VERSION_MAJOR "14" CACHE string "Application version major")
+set(APP_VERSION_MAJOR "13" CACHE string "Application version major")
 set(APP_VERSION_MINOR "0" CACHE string "Application verison minor")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
@@ -57,9 +57,9 @@ set(MYTHTV_SOURCES src/avinfo.cpp
                    src/fileOps.cpp)
 
 add_subdirectory(lib/cppmyth)
-add_subdirectory(kodi)
+add_subdirectory(xbmc)
 
-set(DEPLIBS kodiplatform cppmyth)
+set(DEPLIBS xbmcplatform cppmyth)
 if (WIN32)
   list(APPEND DEPLIBS ws2_32)
 else()
