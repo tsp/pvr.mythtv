@@ -1,4 +1,4 @@
-# Kodi Media Center language file
+# XBMC Media Center language file
 # Addon Name: MythTV PVR Client
 # Addon id: pvr.mythtv
 # Addon Provider: Christian Fetzer, Jean-Luc Barrière
@@ -8,7 +8,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
+"Last-Translator: XBMC Translation Team\n"
 "Language-Team: Croatian (http://www.transifex.com/projects/p/xbmc-main/language/hr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -50,7 +50,7 @@ msgstr "Omogući TV programu da pomiče rasporede emisija"
 
 msgctxt "#30008"
 msgid "Conflict handling"
-msgstr "Rukovanje sukobom"
+msgstr "Sukob rukovanja"
 
 msgctxt "#30009"
 msgid "Prefer Live TV when recording has later slot"
@@ -67,14 +67,6 @@ msgstr "Preferiraj gledanje televizije i poništi sukobljeno snimanje"
 msgctxt "#30012"
 msgid "MythTV Backend Ethernet address (WOL)"
 msgstr "Ethernet adresa (WOL) MythTV pozadinskog softvera"
-
-msgctxt "#30013"
-msgid "MythTV Backend Port for API services"
-msgstr "Ulaz MythTV pozadinskog softvera za API usluge"
-
-msgctxt "#30014"
-msgid "MythTV Security Pin for API services"
-msgstr "MythTV sigurnosni pin za API usluge"
 
 msgctxt "#30019"
 msgid "General"
@@ -144,65 +136,9 @@ msgctxt "#30052"
 msgid "Enable demuxing MPEG-TS"
 msgstr "Omogući razdvajanje MPEG-TS"
 
-msgctxt "#30053"
-msgid "Tuning delay (sec)"
-msgstr "Odgoda prilagodbe (sek)"
-
-msgctxt "#30054"
-msgid "Group recordings by title"
-msgstr "Grupno snimanje prema naslovu"
-
-msgctxt "#30055"
-msgid "Always"
-msgstr "Uvijek"
-
-msgctxt "#30056"
-msgid "Only for series"
-msgstr "Samo za emisije"
-
-msgctxt "#30057"
-msgid "Never"
-msgstr "Nikada"
-
-msgctxt "#30058"
-msgid "Enable commercial skips (EDL)"
-msgstr "Omogući preskakanje reklama (EDL)"
-
-msgctxt "#30059"
-msgid "Always"
-msgstr "Uvijek"
-
-msgctxt "#30060"
-msgid "Dialog"
-msgstr "Dijalog"
-
-msgctxt "#30061"
-msgid "Never"
-msgstr "Nikada"
-
-msgctxt "#30062"
-msgid "Block backend shutdown"
-msgstr "Blokiraj pozadinsko isključivanje"
-
-msgctxt "#30063"
-msgid "Enable channel icons"
-msgstr "Omogući ikone programa"
-
-msgctxt "#30064"
-msgid "Enable recording fanart/thumbnails"
-msgstr "Omogući snimanje postere/minijature"
-
 msgctxt "#30100"
 msgid "Protocol version: %i - Database version: %i"
 msgstr "Inačica protokola: %i - Inačica baze podataka: %i"
-
-msgctxt "#30110"
-msgid "Enabling EDL"
-msgstr "Omogućavanje EDL"
-
-msgctxt "#30111"
-msgid "A cut list or commercial skips have been found.\nDo you want to activate EDL functionality for this show ?"
-msgstr "Popis izbacivanja ili preskakanja reklama je pronađen.\nŽelite li aktivirati EDL funkciju za ovu emisiju?"
 
 msgctxt "#30300"
 msgid "Failed to connect to MythTV backend"

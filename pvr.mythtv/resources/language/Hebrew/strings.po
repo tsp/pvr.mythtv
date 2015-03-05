@@ -1,4 +1,4 @@
-# Kodi Media Center language file
+# XBMC Media Center language file
 # Addon Name: MythTV PVR Client
 # Addon id: pvr.mythtv
 # Addon Provider: Christian Fetzer, Jean-Luc Barrière
@@ -8,7 +8,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
+"Last-Translator: XBMC Translation Team\n"
 "Language-Team: Hebrew (http://www.transifex.com/projects/p/xbmc-main/language/he/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,35 +18,35 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "MythTV Backend Hostname or IP"
-msgstr "שם מארח או כתובת IP"
+msgstr "שם ממשק אחורי או כתובת IP של שרת MythTV "
 
 msgctxt "#30001"
 msgid "MythTV Backend Port"
-msgstr "פורט"
+msgstr "פורט של ממשק אחורי MythTV"
 
 msgctxt "#30002"
 msgid "MythTV Database Username"
-msgstr "שם משתמש למסד נתוני MythTV"
+msgstr "שם משתמש לבסיס המידע של שרת MythTV"
 
 msgctxt "#30003"
 msgid "MythTV Database Password"
-msgstr "סיסמת מסד נתוני MythTV"
+msgstr "סיסמה לבסיס המידע של שרת MythTV"
 
 msgctxt "#30004"
 msgid "MythTV Database Databasename"
-msgstr "שם מסד נתוני MythTV"
+msgstr "שם בסיס המידע של שרת MythTV"
 
 msgctxt "#30005"
 msgid "Include more debug information in the log file"
-msgstr "כלול פירוט אירועים נוסף ביומן הרישום"
+msgstr "כלול מידע תקלות נוסף בקובץ הרישום"
 
 msgctxt "#30006"
 msgid "Enable Live TV"
-msgstr "אפשר שידור חי"
+msgstr "אפשר ממשק טלוויזיה "
 
 msgctxt "#30007"
 msgid "Allow Live TV to move scheduled shows"
-msgstr "אפשר לצפיה בשידור חי לדחות תזמון הקלטה"
+msgstr "אפשר לממשק טלוויזיה להזיז תכניות מתוזמנות"
 
 msgctxt "#30008"
 msgid "Conflict handling"
@@ -54,23 +54,15 @@ msgstr "טיפול בהתנגשויות"
 
 msgctxt "#30009"
 msgid "Prefer Live TV when recording has later slot"
-msgstr "העדף שידור חי כאשר קיים שידור חוזר להקלטה מתוזמנת"
+msgstr "העדף טלוויזיה חיה כאשר קיים שידור חוזר להקלטה"
 
 msgctxt "#30010"
 msgid "Prefer recording and stop Live TV"
-msgstr "העדף הקלטה והפסק צפיה בשידור חי"
+msgstr "העדף הקלטה ועצירה של שידור חי"
 
 msgctxt "#30011"
 msgid "Prefer Live TV and cancel conflicting recording"
-msgstr "העדף שידור חי ובטל תזמון הקלטה חופפת"
-
-msgctxt "#30012"
-msgid "MythTV Backend Ethernet address (WOL)"
-msgstr "כתובת IP של שרת אחורי (עבור WOL)"
-
-msgctxt "#30013"
-msgid "MythTV Backend Port for API services"
-msgstr "פורט לשירותי API"
+msgstr "העדף שידור חי ובטל התנגשויות הקלטה"
 
 msgctxt "#30014"
 msgid "MythTV Security Pin for API services"
@@ -98,7 +90,7 @@ msgstr "תבנית פנימית"
 
 msgctxt "#30026"
 msgid "Automatically Look Up Metadata"
-msgstr "חיפוש  מידע נוסף אוטומטי"
+msgstr "חיפוש אוטומטי של פרטי על"
 
 msgctxt "#30027"
 msgid "Commercial Flag new recordings"
@@ -196,49 +188,41 @@ msgctxt "#30100"
 msgid "Protocol version: %i - Database version: %i"
 msgstr "גרסת פרוטוקול: %i - גרסת מסד נתונים: %i"
 
-msgctxt "#30110"
-msgid "Enabling EDL"
-msgstr "מפעיל EDL"
-
-msgctxt "#30111"
-msgid "A cut list or commercial skips have been found.\nDo you want to activate EDL functionality for this show ?"
-msgstr "רשימת נק' חיתוך הקלטה או דילוגי פרסומות נמצאו.\nהאם לאפשר את תכונת EDL עבור תוכנית זו?"
-
 msgctxt "#30300"
 msgid "Failed to connect to MythTV backend"
-msgstr "נכשל בחיבור לשרת MythTV"
+msgstr "ההתחברות למנגנון של MythTV נכשל"
 
 msgctxt "#30301"
 msgid "Failed to connect to MythTV database"
-msgstr "נכשל בחיבור למסד נתוני MythTV"
+msgstr "ההתחברות למסד הנתונים של MythTV נכשל"
 
 msgctxt "#30302"
 msgid "Connection to MythTV backend lost"
-msgstr "נותק משרת MythTV"
+msgstr "החיבור למנגנון של MythTV נקטע"
 
 msgctxt "#30303"
 msgid "Connection to MythTV restored"
-msgstr "חובר חזרה לשרת MythTV"
+msgstr "החיבור למנגנון של MythTV שוחזר"
 
 msgctxt "#30304"
 msgid "No response from MythTV backend"
-msgstr "אין תגובה משרת MythTV"
+msgstr "לא התקבלה תגובה מהמנגנון של MythTV"
 
 msgctxt "#30305"
 msgid "Channel unavailable"
-msgstr "הערוץ לא זמין"
+msgstr "ערוץ לא זמין"
 
 msgctxt "#30306"
 msgid "Recorder unavailable"
-msgstr "המקליט לא זמין"
+msgstr "המקליט אינו זמין"
 
 msgctxt "#30307"
 msgid "Canceling conflicting recording: %s"
-msgstr "מבטל תזמון הקלטה חופף: %s"
+msgstr "ביטול התנגשויות בהקלטה: %s"
 
 msgctxt "#30308"
 msgid "Stopping Live TV due to conflicting recording: %s"
-msgstr "עוצר שידור חי עקב תזמון הקלטה חופף: %s"
+msgstr "מפסיק טלוויזיה חיה עקב תעדוף הקלטה: %s"
 
 msgctxt "#30309"
 msgid "Not recording"
@@ -258,32 +242,12 @@ msgstr "לא נמצא שידור"
 
 msgctxt "#30411"
 msgid "Delete and re-record"
-msgstr "מחיקה והקלטה מחדש"
+msgstr "מחק והקלט שוב"
 
 msgctxt "#30412"
 msgid "Keep LiveTV recording"
-msgstr "השאר הקלטת שידור חי"
-
-msgctxt "#30421"
-msgid "Show/hide rules with status 'Not Recording'"
-msgstr "הצג/הסתר חוקים עם מצב 'לא מקליט'"
-
-msgctxt "#30431"
-msgid "Record all showings (this channel)"
-msgstr "הקלטת כל ההצגות (ערוץ זה)"
-
-msgctxt "#30432"
-msgid "Record this showing every week"
-msgstr "הקלטת הצגה זו בכל שבוע"
-
-msgctxt "#30433"
-msgid "Record this showing every day"
-msgstr "הקלטת הצגה זו בכל יום"
-
-msgctxt "#30434"
-msgid "Record one showing (all channels)"
-msgstr "הקלטת הצגה אחת (כל הערוצים)"
+msgstr "השאר הקלטה"
 
 msgctxt "#30435"
 msgid "Record all new episodes (this channel)"
-msgstr "הקלטת כל הפרקים החדשים (ערוץ זה)"
+msgstr "הקליטו את כל הפרקים החדשים (ערוץ זה)"
