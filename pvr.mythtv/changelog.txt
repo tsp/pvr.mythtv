@@ -1,3 +1,6 @@
+v1.12.9
+- fix crash parsing invalid AAC/LATM frame
+
 v1.12.8
 - Sync with new build system using cmake
 
