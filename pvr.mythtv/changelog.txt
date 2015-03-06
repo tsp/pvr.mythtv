@@ -1,4 +1,5 @@
-v1.9.22-41 (Backported from KODI release)
+v1.9.22-44 (Backported from KODI release)
+- fix crash parsing invalid frame AAC/LATM
 - Sync with new build system using cmake
 - Merge channels with same chanNum/callSign across sources
 - Support service API 0.28-pre:5.0
