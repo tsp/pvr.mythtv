@@ -7,7 +7,7 @@ svn export --force https://github.com/xbmc/kodi-platform/trunk/src $KODI_PLATFOR
 BASE_URL=https://github.com/xbmc/xbmc/trunk
 svn export --force $BASE_URL/addons/library.xbmc.pvr/libXBMC_pvr.h $KODI_PVR/libXBMC_pvr.h
 svn export --force $BASE_URL/addons/library.xbmc.codec/libXBMC_codec.h $KODI_PVR/libXBMC_codec.h
-svn export --force $BASE_URL/addons/library.xbmc.gui/libXBMC_gui.h $KODI_PVR/libXBMC_gui.h
+svn export --force $BASE_URL/addons/library.kodi.guilib/libKODI_guilib.h $KODI_PVR/libKODI_guilib.h
 svn export --force $BASE_URL/addons/library.xbmc.addon/libXBMC_addon.h $KODI_PVR/libXBMC_addon.h
 svn export --force $BASE_URL/addons/library.xbmc.addon/dlfcn-win32.h $KODI_PVR/dlfcn-win32.h
 svn export --force $BASE_URL/addons/library.xbmc.addon/dlfcn-win32.cpp $KODI_PVR/dlfcn-win32.cpp
