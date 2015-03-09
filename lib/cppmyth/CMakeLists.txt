@@ -3,6 +3,8 @@ cmake_policy (VERSION 2.6)
 
 project (cppmyth)
 
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
 enable_language(CXX)
 enable_language(C)
 
@@ -21,23 +23,34 @@ set (CPPMYTH_LIB_SOVERSION "1.2")
 ###############################################################################
 # add definitions
 if (MSVC)
-  # Turn off Microsofts "security" warnings.
-  add_definitions("/W3 /D_USE_32BIT_TIME_T /D_CRT_SECURE_NO_WARNINGS /wd4005 /wd4996 /nologo")
+  add_definitions ("/D_USE_32BIT_TIME_T /D_CRT_SECURE_NO_WARNINGS")
+  set (CMAKE_C_FLAGS "/W3")
+  set (CMAKE_CXX_FLAGS "/W3 /Od /RTC1 /EHsc /nologo")
   if (STATIC_CRT)
     set (CMAKE_C_FLAGS_RELEASE "/MT")
     set (CMAKE_C_FLAGS_DEBUG "/MTd")
+    set (CMAKE_CXX_FLAGS_RELEASE "/MT")
+    set (CMAKE_CXX_FLAGS_DEBUG "/MTd")
   endif ()
 endif ()
 
 if (NOT WIN32 AND (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX))
-   add_definitions ("-fPIC")
+  add_definitions ("-fPIC")
+  include (CheckLibraryExists)
+  include (CheckAtomic)
+  if (HAS_BUILTIN_SYNC_ADD_AND_FETCH)
+    add_definitions ("-DHAS_BUILTIN_SYNC_ADD_AND_FETCH")
+  endif ()
+  if (HAS_BUILTIN_SYNC_SUB_AND_FETCH)
+    add_definitions ("-DHAS_BUILTIN_SYNC_SUB_AND_FETCH")
+  endif ()
 endif ()
 
 ###############################################################################
 # configure
-set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include (CheckFunctionExists)
 include (CheckFunctionKeywords)
+find_package (Threads REQUIRED)
 
 check_function_exists (timegm CHK_TIMEGM)
 if (CHK_TIMEGM)
@@ -105,9 +118,17 @@ set (CPPMYTH_SOURCES
 
 ###############################################################################
 # add targets
-add_library(cppmyth STATIC ${CPPMYTH_SOURCES})
+set (cppmyth_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
+if (MSVC)
+  list (APPEND cppmyth_LIBRARIES ws2_32)
+else ()
+  list (APPEND cppmyth_LIBRARIES m)
+  find_library (LIBRT rt)
+  if (LIBRT)
+    list (APPEND cppmyth_LIBRARIES rt)
+  endif ()
+endif ()
 
-if(MSVC)
-  target_link_libraries(cppmyth ws2_32)
-endif()
+add_library(cppmyth STATIC ${CPPMYTH_SOURCES})
+target_link_libraries (cppmyth ${cppmyth_LIBRARIES})
 
