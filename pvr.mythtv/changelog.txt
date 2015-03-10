@@ -1,3 +1,6 @@
+v1.12.10
+- Process subscription queue in separated thread
+
 v1.12.9
 - fix crash parsing invalid AAC/LATM frame
 
