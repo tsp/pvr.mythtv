@@ -131,6 +131,6 @@ else ()
   endif ()
 endif ()
 
-add_library(cppmyth STATIC ${CPPMYTH_SOURCES})
+add_library (cppmyth STATIC ${CPPMYTH_SOURCES})
 target_link_libraries (cppmyth ${cppmyth_LIBRARIES})
 
