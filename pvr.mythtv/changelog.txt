@@ -1,3 +1,6 @@
+v1.12.11
+- Use internal watched status before 0.28
+
 v1.12.10
 - Process subscription queue in separated thread
 
