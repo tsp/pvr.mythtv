@@ -1,4 +1,5 @@
-v1.9.22-45 (Backported from KODI release)
+v1.9.22-46 (Backported from KODI release)
+- Use internal watched status before 0.28
 - Process subscription queue in separated thread
 - fix crash parsing invalid frame AAC/LATM
 - Sync with new build system using cmake
