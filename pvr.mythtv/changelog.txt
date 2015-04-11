@@ -1,3 +1,7 @@
+v2.0.11
+- API Guide service 2.2 (0.28)
+- Enable commercial break and cut list by duration
+
 v2.0.10
 - Updated to API 1.9.6
 
