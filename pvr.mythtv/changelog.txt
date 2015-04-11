@@ -1,3 +1,7 @@
+v1.12.12
+- API Guide service 2.2 (0.28)
+- Enable commercial break and cut list by duration
+
 v1.12.11
 - Use internal watched status before 0.28
 
