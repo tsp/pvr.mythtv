@@ -1,3 +1,6 @@
+v1.12.14
+- Set read ahead timeout to 10 sec
+
 v1.12.13
 - API Guide service 2.2 (0.28)
 - Enable commercial break and cut list by duration
