@@ -33,7 +33,8 @@
 #define MIN_TUNE_DELAY        5
 #define MAX_TUNE_DELAY        60
 #define TICK_USEC             100000  // valid range: 10000 - 999999
-#define STARTING_DELAY        1
+#define START_TIMEOUT         2000    // millisec
+#define AHEAD_TIMEOUT         10000   // millisec
 
 using namespace Myth;
 
@@ -96,17 +97,17 @@ bool LiveTVPlayback::Open()
   {
     if (!m_eventHandler.IsRunning())
     {
-      uint32_t timer = 0, delay = STARTING_DELAY * 1000000;
+      PLATFORM::CTimeout timeout(START_TIMEOUT);
       m_eventHandler.Start();
-      while (!m_eventHandler.IsConnected() && timer < delay)
+      do
       {
         usleep(TICK_USEC);
-        timer += TICK_USEC;
       }
+      while (!m_eventHandler.IsConnected() && timeout.TimeLeft() > 0);
       if (!m_eventHandler.IsConnected())
-        DBG(MYTH_DBG_WARN, "%s: event handler is not connected in time (%" PRIu32 "ms)\n", __FUNCTION__, (timer / 1000));
+        DBG(MYTH_DBG_WARN, "%s: event handler is not connected in time\n", __FUNCTION__);
       else
-        DBG(MYTH_DBG_DEBUG, "%s: event handler is connected (%" PRIu32 "ms)\n", __FUNCTION__, (timer / 1000));
+        DBG(MYTH_DBG_DEBUG, "%s: event handler is connected\n", __FUNCTION__);
     }
     return true;
   }
@@ -157,21 +158,21 @@ bool LiveTVPlayback::SpawnLiveTV(const std::string& chanNum, const ChannelList& 
     if (m_recorder->SpawnLiveTV(m_chain.UID, channel->chanNum))
     {
       // Wait chain update until time limit
-      uint32_t timer = 0, delay = m_tuneDelay * 1000000;
+      uint32_t delayMs = m_tuneDelay * 1000;
+      PLATFORM::CTimeout timeout(delayMs);
       do
       {
         lock.Unlock();  // Release the latch to allow chain update
         usleep(TICK_USEC);
-        timer += TICK_USEC;
         lock.Lock();
         if (!m_chain.switchOnCreate)
         {
-          DBG(MYTH_DBG_DEBUG, "%s: tune delay (%" PRIu32 "ms)\n", __FUNCTION__, (timer / 1000));
+          DBG(MYTH_DBG_DEBUG, "%s: tune delay (%" PRIu32 "ms)\n", __FUNCTION__, (delayMs - timeout.TimeLeft()));
           return true;
         }
       }
-      while (timer < delay);
-      DBG(MYTH_DBG_ERROR, "%s: tune delay exceeded (%" PRIu32 "ms)\n", __FUNCTION__, (timer / 1000));
+      while (timeout.TimeLeft() > 0);
+      DBG(MYTH_DBG_ERROR, "%s: tune delay exceeded (%" PRIu32 "ms)\n", __FUNCTION__, delayMs);
       m_recorder->StopLiveTV();
     }
     ClearChain();
@@ -477,12 +478,13 @@ int LiveTVPlayback::Read(void* buffer, unsigned n)
     s = fs - m_chain.currentTransfer->filePosition; // Acceptable block size
     if (s == 0)
     {
-      PLATFORM::CTimeout timeout(500);
+      PLATFORM::CTimeout timeout(AHEAD_TIMEOUT);
       for (;;)
       {
         // Reading ahead
         if (m_chain.currentSequence == m_chain.lastSequence)
         {
+          usleep(500000);
           if ((rp = recorder->GetFilePosition()) > fs)
           {
             PLATFORM::CLockObject lock(*m_mutex); // Lock chain
@@ -495,7 +497,6 @@ int LiveTVPlayback::Read(void* buffer, unsigned n)
             DBG(MYTH_DBG_WARN, "%s: read position is ahead (%" PRIi64 ")\n", __FUNCTION__, fs);
             return 0;
           }
-          usleep(20000);
         }
         // Switch next file transfer is required to continue
         else
