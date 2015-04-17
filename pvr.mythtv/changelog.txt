@@ -1,4 +1,5 @@
-v1.9.22-46 (Backported from KODI release)
+v1.9.22-49 (Backported from KODI release)
+- Set read ahead timeout to 10 sec
 - API Guide service 2.2 (0.28)
 - Enable commercial break and cut list by duration
 - Use internal watched status before 0.28
