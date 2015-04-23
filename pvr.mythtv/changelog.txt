@@ -1,5 +1,6 @@
-v1.12.16
+v1.12.17
 - Set read ahead timeout to 10 sec
+- DONE_RECORDING: Wait for 500 ms before query recorder
 
 v1.12.13
 - API Guide service 2.2 (0.28)
