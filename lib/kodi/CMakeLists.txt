@@ -7,8 +7,6 @@ set(APP_VERSION_MAJOR "15" CACHE string "Application version major")
 set(APP_VERSION_MINOR "0" CACHE string "Application version minor")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR})
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/platform)
-
 #
 # Install required headers from kodi depends
 IF(WIN32)

@@ -55,9 +55,10 @@ set(MYTHTV_SOURCES src/avinfo.cpp
                    src/fileOps.cpp)
 
 add_subdirectory(lib/cppmyth)
-add_subdirectory(kodi)
+add_subdirectory(lib/kodi)
+add_subdirectory(lib/platform)
 
-set(DEPLIBS kodiplatform cppmyth)
+set(DEPLIBS platform cppmyth)
 if(WIN32)
   list(APPEND DEPLIBS ws2_32)
 else()

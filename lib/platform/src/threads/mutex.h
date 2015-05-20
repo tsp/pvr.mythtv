@@ -51,7 +51,7 @@ namespace PLATFORM
 
   private:
     inline PreventCopy(const PreventCopy &c) { *this = c; }
-    inline PreventCopy &operator=(const PreventCopy &c){ *this = c; return *this; }
+    inline PreventCopy &operator=(const PreventCopy &c){ (void)c; return *this; }
   };
 
   template <typename _Predicate>
@@ -331,6 +331,12 @@ namespace PLATFORM
     {
       CEvent event;
       event.Wait(iTimeout);
+    }
+
+    void Reset(void)
+    {
+      CLockObject lock(m_mutex);
+      m_bSignaled = false;
     }
 
   private:
