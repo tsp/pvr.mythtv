@@ -32,13 +32,13 @@
  */
 
 #include "../threads/mutex.h"
-#include "../util/StdString.h"
 
 #if defined(__WINDOWS__)
 #include "../windows/os-socket.h"
 #else
 #include "../posix/os-socket.h"
 #endif
+#include <string>
 
 // Common socket operations
 
@@ -56,26 +56,26 @@ namespace PLATFORM
     virtual bool IsOpen(void) = 0;
     virtual ssize_t Write(void* data, size_t len) = 0;
     virtual ssize_t Read(void* data, size_t len, uint64_t iTimeoutMs = 0) = 0;
-    virtual CStdString GetError(void) = 0;
+    virtual std::string GetError(void) = 0;
     virtual int GetErrorNumber(void) = 0;
-    virtual CStdString GetName(void) = 0;
+    virtual std::string GetName(void) = 0;
   };
 
   template <typename _SType>
   class CCommonSocket : public ISocket
   {
   public:
-    CCommonSocket(_SType initialSocketValue, const CStdString &strName) :
+    CCommonSocket(_SType initialSocketValue, const std::string &strName) :
       m_socket(initialSocketValue),
       m_strName(strName),
       m_iError(0) {}
 
     virtual ~CCommonSocket(void) {}
 
-    virtual CStdString GetError(void)
+    virtual std::string GetError(void)
     {
-      CStdString strError;
-      strError = m_strError.IsEmpty() && m_iError != 0 ? strerror(m_iError) : m_strError;
+      std::string strError;
+      strError = m_strError.empty() && m_iError != 0 ? strerror(m_iError) : m_strError;
       return strError;
     }
 
@@ -84,19 +84,17 @@ namespace PLATFORM
       return m_iError;
     }
 
-    virtual CStdString GetName(void)
+    virtual std::string GetName(void)
     {
-      CStdString strName;
-      strName = m_strName;
-      return strName;
+      return m_strName;
     }
 
   protected:
-    _SType     m_socket;
-    CStdString m_strError;
-    CStdString m_strName;
-    int        m_iError;
-    CMutex     m_mutex;
+    _SType      m_socket;
+    std::string m_strError;
+    std::string m_strName;
+    int         m_iError;
+    CMutex      m_mutex;
   };
 
   template <typename _Socket>
@@ -181,9 +179,9 @@ namespace PLATFORM
       return iReturn;
     }
 
-    virtual CStdString GetError(void)
+    virtual std::string GetError(void)
     {
-      CStdString strError;
+      std::string strError;
       CLockObject lock(m_mutex);
       strError = m_socket ? m_socket->GetError() : "";
       return strError;
@@ -195,9 +193,9 @@ namespace PLATFORM
       return m_socket ? m_socket->GetErrorNumber() : -EINVAL;
     }
 
-    virtual CStdString GetName(void)
+    virtual std::string GetName(void)
     {
-      CStdString strName;
+      std::string strName;
       CLockObject lock(m_mutex);
       strName = m_socket ? m_socket->GetName() : "";
       return strName;

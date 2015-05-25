@@ -1,8 +1,5 @@
 DIR=$(dirname $0)
-KODI_PLATFORM=$DIR/platform
 KODI_PVR=$DIR/pvr
-
-svn export --force https://github.com/xbmc/kodi-platform/trunk/src $KODI_PLATFORM/src
 
 BASE_URL=https://github.com/xbmc/xbmc/trunk
 svn export --force $BASE_URL/addons/library.xbmc.pvr/libXBMC_pvr.h $KODI_PVR/libXBMC_pvr.h

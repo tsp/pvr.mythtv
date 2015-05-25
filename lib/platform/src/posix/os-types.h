@@ -48,6 +48,10 @@
 #include <stdint.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#if defined(__APPLE__)
+// for HRESULT
+#include <CoreFoundation/CFPlugInCOM.h>
+#endif
 
 #define LIBTYPE
 #define DECLSPEC
@@ -57,9 +61,13 @@ typedef socket_t tcp_socket_t;
 #define INVALID_SOCKET_VALUE        (-1)
 typedef socket_t serial_socket_t;
 #define INVALID_SERIAL_SOCKET_VALUE (-1)
+typedef socket_t chardev_socket_t;
+#define INVALID_CHARDEV_SOCKET_VALUE (-1)
 
 typedef long LONG;
+#if !defined(__APPLE__)
 typedef LONG HRESULT;
+#endif
 
 #define _FILE_OFFSET_BITS 64
 #define FILE_BEGIN              0
@@ -67,16 +75,33 @@ typedef LONG HRESULT;
 #define FILE_END                2
 
 // Success codes
+#ifndef S_OK
 #define S_OK           0L
+#endif
+
+#ifndef S_FALSE
 #define S_FALSE        1L
+#endif
+
+#ifndef FAILED
 #define FAILED(Status) ((HRESULT)(Status)<0)
+#endif
+
+#ifndef SUCCEEDED
 #define SUCCEEDED(hr) (((HRESULT)(hr)) >= 0)
+#endif
 
 // Error codes
 #define ERROR_FILENAME_EXCED_RANGE 206L
 #define ERROR_INVALID_NAME         123L
+
+#ifndef E_OUTOFMEMORY
 #define E_OUTOFMEMORY              0x8007000EL
+#endif
+
+#ifndef E_FAIL
 #define E_FAIL                     0x8004005EL
+#endif
 
 #ifdef TARGET_LINUX
 #include <limits.h>
