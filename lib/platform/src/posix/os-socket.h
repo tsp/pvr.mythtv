@@ -19,8 +19,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301  USA
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *
  * Alternatively, you can license this library under a commercial license,
@@ -37,6 +36,7 @@
 #include "../util/timeutils.h"
 #include <stdio.h>
 #include <fcntl.h>
+#include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
@@ -165,7 +165,22 @@ namespace PLATFORM
 
     return iBytesRead;
   }
+
+  inline int SocketIoctl(socket_t socket, int *iError, int request, void* data)
+  {
+    if (socket == INVALID_SOCKET_VALUE)
+    {
+      *iError = EINVAL;
+      return -1;
+    }
+
+    int iReturn = ioctl(socket, request, data);
+    if (iReturn < 0)
+      *iError = errno;
+    return iReturn;
+  }
   //@}
+
 
   // TCP
   //@{
@@ -287,7 +302,9 @@ namespace PLATFORM
   inline bool TcpConnectSocket(tcp_socket_t socket, struct addrinfo* addr, int *iError, uint64_t iTimeout = 0)
   {
     *iError = 0;
+    SocketSetBlocking(socket, false);
     int iConnectResult = connect(socket, addr->ai_addr, addr->ai_addrlen);
+    SocketSetBlocking(socket, true);
     if (iConnectResult == -1)
     {
       if (errno == EINPROGRESS)

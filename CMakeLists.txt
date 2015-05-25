@@ -55,9 +55,10 @@ set(MYTHTV_SOURCES src/avinfo.cpp
                    src/fileOps.cpp)
 
 add_subdirectory(lib/cppmyth)
-add_subdirectory(xbmc)
+add_subdirectory(lib/xbmc)
+add_subdirectory(lib/platform)
 
-set(DEPLIBS xbmcplatform cppmyth)
+set(DEPLIBS platform cppmyth)
 if(WIN32)
   list(APPEND DEPLIBS ws2_32)
 else()

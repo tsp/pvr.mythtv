@@ -19,8 +19,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301  USA
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *
  * Alternatively, you can license this library under a commercial license,
@@ -41,7 +40,9 @@
 #endif
 
 #define WIN32_LEAN_AND_MEAN           // Enable LEAN_AND_MEAN support
+#ifndef NOMINMAX
 #define NOMINMAX                      // don't define min() and max() to prevent a clash with std::min() and std::max
+#endif
 #include <windows.h>
 #include <wchar.h>
 

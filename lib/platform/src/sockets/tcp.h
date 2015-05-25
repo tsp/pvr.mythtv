@@ -19,8 +19,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301  USA
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *
  * Alternatively, you can license this library under a commercial license,
@@ -34,14 +33,13 @@
 
 #include "socket.h"
 
-using namespace std;
 
 namespace PLATFORM
 {
   class CTcpSocket : public CCommonSocket<tcp_socket_t>
   {
     public:
-      CTcpSocket(const CStdString &strHostname, uint16_t iPort) :
+      CTcpSocket(const std::string &strHostname, uint16_t iPort) :
         CCommonSocket<tcp_socket_t>(INVALID_SOCKET_VALUE, strHostname),
         m_iPort(iPort) {}
 
@@ -61,9 +59,21 @@ namespace PLATFORM
 
         for(addr = address; !bReturn && addr; addr = addr->ai_next)
         {
-          m_socket = TcpCreateSocket(addr, &m_iError, iTimeoutMs);
+          m_socket = TcpCreateSocket(addr, &m_iError);
           if (m_socket != INVALID_SOCKET_VALUE)
-            bReturn = true;
+          {
+            if (!TcpConnectSocket(m_socket, addr, &m_iError, iTimeoutMs))
+            {
+              TcpSocketClose(m_socket);
+              m_strError = strerror(m_iError);
+              m_socket = INVALID_SOCKET_VALUE;
+            }
+            else
+            {
+              TcpSetNoDelay(m_socket);
+              bReturn = true;
+            }
+          }
           else
             m_strError = strerror(m_iError);
         }
@@ -81,6 +91,7 @@ namespace PLATFORM
       virtual void Shutdown(void)
       {
         TcpSocketShutdown(m_socket);
+        TcpSocketClose(m_socket);
         m_socket = INVALID_SOCKET_VALUE;
       }
 
@@ -100,7 +111,7 @@ namespace PLATFORM
       }
 
     protected:
-      virtual tcp_socket_t TcpCreateSocket(struct addrinfo* addr, int* iError, uint64_t iTimeout)
+      virtual tcp_socket_t TcpCreateSocket(struct addrinfo* addr, int* iError)
       {
         tcp_socket_t fdSock = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
         if (fdSock == INVALID_SOCKET_VALUE)
@@ -108,14 +119,6 @@ namespace PLATFORM
           *iError = errno;
           return (tcp_socket_t)INVALID_SOCKET_VALUE;
         }
-
-        if (!TcpConnectSocket(fdSock, addr, iError, iTimeout))
-        {
-          TcpSocketClose(fdSock);
-          return (tcp_socket_t)INVALID_SOCKET_VALUE;
-        }
-
-        TcpSetNoDelay(fdSock);
 
         return fdSock;
       }
@@ -126,7 +129,7 @@ namespace PLATFORM
   class CTcpConnection : public CProtectedSocket<CTcpSocket>
   {
   public:
-    CTcpConnection(const CStdString &strHostname, uint16_t iPort) :
+    CTcpConnection(const std::string &strHostname, uint16_t iPort) :
       CProtectedSocket<CTcpSocket> (new CTcpSocket(strHostname, iPort)) {}
     virtual ~CTcpConnection(void) {}
   };
