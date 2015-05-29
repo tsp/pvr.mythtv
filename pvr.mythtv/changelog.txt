@@ -1,4 +1,6 @@
-v1.9.22-51 (Backported from KODI release)
+v1.9.22-53 (Backported from KODI release)
+- Sync cppmyth upstream (1.5.0)
+- updated to use new libplatform-dev
 - Support protocol 0.28-pre:86
 - DONE_RECORDING: Wait for 500 ms before query recorder
 - Set read ahead timeout to 10 sec
