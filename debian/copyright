@@ -23,7 +23,7 @@ License: GPL-2+
  On Debian systems, the complete text of the GNU General
  Public License version 2 can be found in "/usr/share/common-licenses/GPL-2".
 
-Files: kodi/platform/*
+Files: lib/platform/*
 Copyright: 2011-2015 Pulse-Eight
 License: dual-licensed
  This program is dual-licensed; you can redistribute it and/or modify
