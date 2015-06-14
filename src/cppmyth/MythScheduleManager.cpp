@@ -154,6 +154,23 @@ ScheduleList MythScheduleManager::GetUpcomingRecordings()
   CLockObject lock(m_lock);
   for (RecordingList::iterator it = m_recordings.begin(); it != m_recordings.end(); ++it)
   {
+
+    //Only include timers which have an inactive status if the user has requested it (flag m_showNotRecording)
+    switch (it->second->Status())
+    {
+    //Upcoming recordings which are disabled due to being lower priority duplicates or already recorded
+    case Myth::RS_EARLIER_RECORDING:  //will record earlier
+    case Myth::RS_LATER_SHOWING:      //will record later
+    case Myth::RS_CURRENT_RECORDING:  //Already in the current library
+    case Myth::RS_PREVIOUS_RECORDING: //Previoulsy recorded but no longer in the library
+      if (!m_showNotRecording)
+      {
+        XBMC->Log(LOG_DEBUG, "%s: Skipping %s:%s on %s because status %d and m_showNotRecording=%i", __FUNCTION__,
+                  it->second->Title().c_str(), it->second->Subtitle().c_str(), it->second->ChannelName().c_str(), it->second->Status(), m_showNotRecording);
+        continue;
+      }
+    }
+
     recordings.push_back(std::make_pair(it->first, it->second));
   }
   return recordings;
@@ -258,7 +275,10 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::DisableRecording(unsigned in
   RecordingRuleNodePtr node = this->FindRuleById(recording->RecordID());
   if (node)
   {
-    XBMC->Log(LOG_DEBUG, "%s - %u : Found rule %u type %d", __FUNCTION__, index, (unsigned)node->m_rule.RecordID(), (int)node->m_rule.Type());
+    XBMC->Log(LOG_DEBUG, "%s - %u : %s:%s on channel %s ProgramID %s",
+              __FUNCTION__, index, recording->Title().c_str(), recording->Subtitle().c_str(), recording->Callsign().c_str()), recording->ProgramID().c_str();
+    XBMC->Log(LOG_DEBUG, "%s - %u : Found rule %u type %d with recording status %i",
+              __FUNCTION__, index, (unsigned)node->m_rule.RecordID(), (int)node->m_rule.Type(), recording->Status());
     int method = METHOD_UNKNOWN;
     MythRecordingRule handle = node->m_rule.DuplicateRecordingRule();
 
@@ -273,10 +293,20 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::DisableRecording(unsigned in
       switch (node->m_rule.Type())
       {
       case Myth::RT_SingleRecord:
-        if (recording->Status() == Myth::RS_RECORDING || recording->Status() == Myth::RS_TUNING)
-          method = METHOD_DELETE;
-        else
-          method = METHOD_UPDATE_INACTIVE;
+        switch (recording->Status())
+        {
+          case Myth::RS_RECORDING:
+          case Myth::RS_TUNING:
+            method = METHOD_DELETE;
+            break;
+          case Myth::RS_PREVIOUS_RECORDING:
+          case Myth::RS_EARLIER_RECORDING:
+            method = METHOD_CREATE_OVERRIDE;
+            break;
+          default:
+            method = METHOD_UPDATE_INACTIVE;
+            break;
+        }
         break;
       case Myth::RT_NotRecording:
         method = METHOD_UPDATE_INACTIVE;
@@ -298,6 +328,7 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::DisableRecording(unsigned in
       }
     }
 
+    XBMC->Log(LOG_DEBUG, "%s - %u : Dealing with the problem using method %i", __FUNCTION__, index, method);
     if (method == METHOD_UPDATE_INACTIVE)
     {
       handle.SetInactive(true);
@@ -315,7 +346,17 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::DisableRecording(unsigned in
       handle.SetType(Myth::RT_DontRecord);
       handle.SetStartTime(recording->StartTime());
       handle.SetEndTime(recording->EndTime());
+      handle.SetChannelID(recording->ChannelID());
+      handle.SetCallsign(recording->Callsign()); //Fix Any Channel rule over-ride
+      handle.SetTitle(recording->Title());
+      handle.SetSubtitle(recording->Subtitle()); //Not necessary but makes rule easier to read in mythweb
+      handle.SetProgramID(recording->ProgramID()); //Make sure it's the same item
+      handle.SetSearchType(Myth::ST_NoSearch); //Fix over-ride of power searches
       handle.SetParentID(node->m_rule.RecordID());
+      XBMC->Log(LOG_DEBUG, "%s - %u : Creating Override for %u (%s: %s) on %i (%s)"
+                , __FUNCTION__, index, (unsigned)handle.ParentID(), handle.Title().c_str(),
+                handle.Subtitle().c_str(), handle.ChannelID(), handle.Callsign().c_str());
+
       if (!m_control->AddRecordSchedule(*(handle.GetPtr())))
         return MSM_ERROR_FAILED;
       node->m_overrideRules.push_back(handle); // sync node
@@ -343,46 +384,52 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::EnableRecording(unsigned int
   RecordingRuleNodePtr node = this->FindRuleById(recording->RecordID());
   if (node)
   {
-    XBMC->Log(LOG_DEBUG, "%s - %u : Found rule %u type %d", __FUNCTION__, index, (unsigned)node->m_rule.RecordID(), (int)node->m_rule.Type());
+    XBMC->Log(LOG_DEBUG, "%s - %u : %s:%s on channel %s ProgramID %s",
+              __FUNCTION__, index, recording->Title().c_str(), recording->Subtitle().c_str(), recording->Callsign().c_str()), recording->ProgramID().c_str();
+    XBMC->Log(LOG_DEBUG, "%s - %u : Found rule %u type %d disabled by status %i",
+              __FUNCTION__, index, (unsigned)node->m_rule.RecordID(), (int)node->m_rule.Type(), recording->Status());
     int method = METHOD_UNKNOWN;
     MythRecordingRule handle = node->m_rule.DuplicateRecordingRule();
 
-    if (recording->Status() == Myth::RS_UNKNOWN)
+    switch (recording->Status())
     {
-      // Not recording. Simply activate the rule
-      method = METHOD_UPDATE_INACTIVE;
-    }
-    else if (recording->Status() == Myth::RS_NEVER_RECORD)
-    {
-      // Add override to record anyway
-      method = METHOD_CREATE_OVERRIDE;
-    }
-    else
-    {
-      // Method depends of its rule type
-      switch (node->m_rule.Type())
-      {
-      case Myth::RT_DontRecord:
-      case Myth::RT_OverrideRecord:
-        method = METHOD_DELETE;
-        break;
-      case Myth::RT_SingleRecord:
-      case Myth::RT_NotRecording:
-      case Myth::RT_OneRecord:
-      case Myth::RT_ChannelRecord:
-      case Myth::RT_AllRecord:
-      case Myth::RT_DailyRecord:
-      case Myth::RT_WeeklyRecord:
-      case Myth::RT_FindDailyRecord:
-      case Myth::RT_FindWeeklyRecord:
-        // Is it inactive ? Try to enable rule
+      case Myth::RS_UNKNOWN:
+        // Not recording. Simply activate the rule
         method = METHOD_UPDATE_INACTIVE;
         break;
-      default:
+      case Myth::RS_NEVER_RECORD:
+      case Myth::RS_PREVIOUS_RECORDING:
+      case Myth::RS_EARLIER_RECORDING:
+      case Myth::RS_CURRENT_RECORDING:
+        // Add override to record anyway
+        method = METHOD_CREATE_OVERRIDE;
         break;
-      }
+
+      default:
+        // Method depends of its rule type
+        switch (node->m_rule.Type())
+        {
+          case Myth::RT_DontRecord:
+          case Myth::RT_OverrideRecord:
+            method = METHOD_DELETE;
+            break;
+          case Myth::RT_SingleRecord:
+          case Myth::RT_NotRecording:
+          case Myth::RT_OneRecord:
+          case Myth::RT_ChannelRecord:
+          case Myth::RT_AllRecord:
+          case Myth::RT_DailyRecord:
+          case Myth::RT_WeeklyRecord:
+          case Myth::RT_FindDailyRecord:
+          case Myth::RT_FindWeeklyRecord:
+            // Is it inactive ? Try to enable rule
+            method = METHOD_UPDATE_INACTIVE;
+            break;
+        }
+        break;
     }
 
+    XBMC->Log(LOG_DEBUG, "%s - %u : Dealing with the problem using method %i", __FUNCTION__, index, method);
     if (method == METHOD_UPDATE_INACTIVE)
     {
       handle.SetInactive(false);
@@ -400,7 +447,17 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::EnableRecording(unsigned int
       handle.SetType(Myth::RT_OverrideRecord);
       handle.SetStartTime(recording->StartTime());
       handle.SetEndTime(recording->EndTime());
+      handle.SetChannelID(recording->ChannelID());
+      handle.SetCallsign(recording->Callsign()); //Fix Any Channel rule over-ride
+      handle.SetTitle(recording->Title());
+      handle.SetSubtitle(recording->Subtitle()); //Not necessary but makes rule easier to read in mythweb
+      handle.SetProgramID(recording->ProgramID()); //Make sure it's the same item
+      handle.SetSearchType(Myth::ST_NoSearch); //Fix over-ride of power searches
       handle.SetParentID(node->m_rule.RecordID());
+      XBMC->Log(LOG_DEBUG, "%s - %u : Creating Override for %u (%s:%s) on %i (%s)"
+                , __FUNCTION__, index, (unsigned)handle.ParentID(), handle.Title().c_str(),
+                handle.Subtitle().c_str(), handle.ChannelID(), handle.Callsign().c_str());
+
       if (!m_control->AddRecordSchedule(*(handle.GetPtr())))
         return MSM_ERROR_FAILED;
       node->m_overrideRules.push_back(handle); // sync node
@@ -428,7 +485,8 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::UpdateRecording(unsigned int
   RecordingRuleNodePtr node = this->FindRuleById(recording->RecordID());
   if (node)
   {
-    XBMC->Log(LOG_DEBUG, "%s - %u : Found rule %u type %d", __FUNCTION__, index, (unsigned)node->m_rule.RecordID(), (int)node->m_rule.Type());
+    XBMC->Log(LOG_DEBUG, "%s - %u : Found rule %u type %d and recording status %i",
+              __FUNCTION__, index, (unsigned)node->m_rule.RecordID(), (int)node->m_rule.Type(), recording->Status());
     int method = METHOD_UNKNOWN;
     MythRecordingRule handle = node->m_rule.DuplicateRecordingRule();
 
@@ -473,24 +531,25 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::UpdateRecording(unsigned int
       // Only priority can be overriden
       handle.SetPriority(newrule.Priority());
       method = METHOD_DISCREET_UPDATE;
-        break;
-      case Myth::RT_SingleRecord:
-        if (recording->Status() == Myth::RS_RECORDING || recording->Status() == Myth::RS_TUNING)
-        {
-          // Discreet update
-          handle.SetEndTime(newrule.EndTime());
-          handle.SetEndOffset(newrule.EndOffset());
-          method = METHOD_DISCREET_UPDATE;
-        }
-        else
-        {
-          method = METHOD_FULL_UPDATE;
-        }
-        break;
-      default:
-        break;
+      break;
+    case Myth::RT_SingleRecord:
+      if (recording->Status() == Myth::RS_RECORDING || recording->Status() == Myth::RS_TUNING)
+      {
+        // Discreet update
+        handle.SetEndTime(newrule.EndTime());
+        handle.SetEndOffset(newrule.EndOffset());
+        method = METHOD_DISCREET_UPDATE;
+      }
+      else
+      {
+        method = METHOD_FULL_UPDATE;
+      }
+      break;
+    default:
+      break;
     }
 
+    XBMC->Log(LOG_DEBUG, "%s - %u : Dealing with the problem using method %i", __FUNCTION__, index, method);
     if (method == METHOD_DISCREET_UPDATE)
     {
       if (!m_control->UpdateRecordSchedule(*(handle.GetPtr())))
@@ -507,7 +566,17 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::UpdateRecording(unsigned int
       handle.SetType(Myth::RT_OverrideRecord);
       handle.SetStartTime(recording->StartTime());
       handle.SetEndTime(recording->EndTime());
+      handle.SetChannelID(recording->ChannelID());
+      handle.SetCallsign(recording->Callsign()); //Fix Any Channel rule over-ride
+      handle.SetTitle(recording->Title());
+      handle.SetSubtitle(recording->Subtitle()); //Not necessary but makes rule easier to read in mythweb (contains rule for powersearches)
+      handle.SetProgramID(recording->ProgramID()); //Make sure it's the same item
+      handle.SetSearchType(Myth::ST_NoSearch); //Fix over-ride of power searches
       handle.SetParentID(node->m_rule.RecordID());
+      XBMC->Log(LOG_DEBUG, "%s - %u : Creating Override for %u (%s: %s) on %i (%s)"
+                , __FUNCTION__, index, (unsigned)node->m_rule.RecordID(), node->m_rule.Title().c_str(),
+                node->m_rule.Subtitle().c_str(), recording->ChannelID(), recording->Callsign().c_str());
+
       if (!m_control->AddRecordSchedule(*(handle.GetPtr())))
         return MSM_ERROR_FAILED;
       node->m_overrideRules.push_back(handle); // sync node
