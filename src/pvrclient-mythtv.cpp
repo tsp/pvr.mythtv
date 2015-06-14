@@ -1270,6 +1270,7 @@ PVR_ERROR PVRClientMythTV::GetTimers(ADDON_HANDLE handle)
   ScheduleList upcomingRecordings = m_scheduleManager->GetUpcomingRecordings();
   for (ScheduleList::iterator it = upcomingRecordings.begin(); it != upcomingRecordings.end(); ++it)
   {
+
     PVR_TIMER tag;
     memset(&tag, 0, sizeof(PVR_TIMER));
 
@@ -1291,8 +1292,13 @@ PVR_ERROR PVRClientMythTV::GetTimers(ADDON_HANDLE handle)
       tag.iMarginEnd = rule.EndOffset();
       tag.iMarginStart = rule.StartOffset();
       tag.firstDay = it->second->RecordingStartTime();
-      tag.bIsRepeating = meta.isRepeating;
-      tag.iWeekdays = meta.weekDays;
+      //If the results of GetUpcomingList are being used (what is actually to be recorded),
+      //rather than the rule that causes them from GetRecordingScheduleList (probably best while Kodi can't
+      //handle full myth-style series recording), then the best approach seems to be showning no repeat
+      //without the optional a day mask as any repeats will be shown as separate timers in the list.
+      //(It also makes the timers screen much easier to read!)
+      tag.bIsRepeating = false; //meta.isRepeating;
+      tag.iWeekdays = 0;
       if (*(meta.marker))
         rulemarker.append("(").append(meta.marker).append(")");
     }
@@ -1308,9 +1314,16 @@ PVR_ERROR PVRClientMythTV::GetTimers(ADDON_HANDLE handle)
 
     // Status: Match recording status with PVR_TIMER status
     if (g_bExtraDebug)
-      XBMC->Log(LOG_DEBUG,"%s ## - State: %d - ##", __FUNCTION__, it->second->Status());
+      XBMC->Log(LOG_DEBUG,"%s ## %s:%s on %s - State: %d - ##", __FUNCTION__,
+                it->second->Title().c_str(), it->second->Subtitle().c_str(), it->second->ChannelName().c_str(), it->second->Status());
     switch (it->second->Status())
     {
+    case Myth::RS_EARLIER_RECORDING:  //Another entry in the list will record 'earlier'
+    case Myth::RS_LATER_SHOWING:      //Another entry in the list will record 'later'
+    case Myth::RS_CURRENT_RECORDING:  //Already in the current library
+    case Myth::RS_PREVIOUS_RECORDING: //Recorded before but not in the library anylonger
+      tag.state = PVR_TIMER_STATE_ABORTED;
+      break;
     case Myth::RS_RECORDING:
       tag.state = PVR_TIMER_STATE_RECORDING;
       break;
@@ -1323,7 +1336,6 @@ PVR_ERROR PVRClientMythTV::GetTimers(ADDON_HANDLE handle)
     case Myth::RS_RECORDED:
       tag.state = PVR_TIMER_STATE_COMPLETED;
       break;
-    case Myth::RS_EARLIER_RECORDING:
     case Myth::RS_WILL_RECORD:
       tag.state = PVR_TIMER_STATE_SCHEDULED;
       break;
@@ -2116,7 +2128,9 @@ PVR_ERROR PVRClientMythTV::CallMenuHook(const PVR_MENUHOOK &menuhook, const PVR_
     {
       bool flag = m_scheduleManager->ToggleShowNotRecording();
       HandleScheduleChange();
-      std::string info = (flag ? XBMC->GetLocalizedString(30310) : XBMC->GetLocalizedString(30311));
+      std::string info = (flag ? XBMC->GetLocalizedString(30310) : XBMC->GetLocalizedString(30311)); //Enabled / Disabled
+      info += ": ";
+      info += XBMC->GetLocalizedString(30421); //Show/hide rules with status 'Not Recording'
       XBMC->QueueNotification(QUEUE_INFO, info.c_str());
       return PVR_ERROR_NO_ERROR;
     }
