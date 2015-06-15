@@ -1292,13 +1292,8 @@ PVR_ERROR PVRClientMythTV::GetTimers(ADDON_HANDLE handle)
       tag.iMarginEnd = rule.EndOffset();
       tag.iMarginStart = rule.StartOffset();
       tag.firstDay = it->second->RecordingStartTime();
-      //If the results of GetUpcomingList are being used (what is actually to be recorded),
-      //rather than the rule that causes them from GetRecordingScheduleList (probably best while Kodi can't
-      //handle full myth-style series recording), then the best approach seems to be showning no repeat
-      //without the optional a day mask as any repeats will be shown as separate timers in the list.
-      //(It also makes the timers screen much easier to read!)
-      tag.bIsRepeating = false; //meta.isRepeating;
-      tag.iWeekdays = 0;
+      tag.bIsRepeating = meta.isRepeating;
+      tag.iWeekdays = meta.weekDays;
       if (*(meta.marker))
         rulemarker.append("(").append(meta.marker).append(")");
     }
@@ -1379,10 +1374,18 @@ PVR_ERROR PVRClientMythTV::GetTimers(ADDON_HANDLE handle)
     PVR_STRCPY(tag.strDirectory, "");
 
     tag.iClientIndex = it->first;
-    PVR->TransferTimerEntry(handle, &tag);
     // Add it to memorandom: cf UpdateTimer()
     MYTH_SHARED_PTR<PVR_TIMER> pTag = MYTH_SHARED_PTR<PVR_TIMER>(new PVR_TIMER(tag));
     m_PVRtimerMemorandum.insert(std::make_pair((unsigned int&)tag.iClientIndex, pTag));
+
+    //If the results of GetUpcomingList are being used (what is actually to be recorded),
+    //rather than the rule that causes them from GetRecordingScheduleList (probably best while Kodi can't
+    //handle full myth-style series recording), then the best approach seems to be showning no repeat
+    //without the optional a day mask as any repeats will be shown as separate timers in the list.
+    //(It also makes the timers screen much easier to read!)
+    tag.bIsRepeating = false;
+    tag.iWeekdays = 0;
+    PVR->TransferTimerEntry(handle, &tag);
   }
 
   if (g_bExtraDebug)
@@ -1601,25 +1604,31 @@ PVR_ERROR PVRClientMythTV::UpdateTimer(const PVR_TIMER &timer)
   std::map<unsigned int, MYTH_SHARED_PTR<PVR_TIMER> >::const_iterator old = m_PVRtimerMemorandum.find(timer.iClientIndex);
   if (old == m_PVRtimerMemorandum.end())
     return PVR_ERROR_INVALID_PARAMETERS;
-  else
+
+  // Since TAG is transfered without repeating info we have to restore them before comparing,
+  PVR_TIMER newTimer = timer;
+  if (old->second->bIsRepeating && !newTimer.bIsRepeating)
   {
-    if (old->second->iClientChannelUid != timer.iClientChannelUid)
-      diffmask |= CTTimer;
-    if (old->second->bIsRepeating != timer.bIsRepeating || old->second->iWeekdays != timer.iWeekdays)
-      diffmask |= CTTimer;
-    if (old->second->startTime != timer.startTime || old->second->endTime != timer.endTime)
-      diffmask |= CTTimer;
-    if (old->second->iPriority != timer.iPriority)
-      diffmask |= CTTimer;
-    if (strcmp(old->second->strTitle, timer.strTitle) != 0)
-      diffmask |= CTTimer;
-    if ((old->second->state == PVR_TIMER_STATE_ABORTED || old->second->state == PVR_TIMER_STATE_CANCELLED)
-            && timer.state != PVR_TIMER_STATE_ABORTED && timer.state != PVR_TIMER_STATE_CANCELLED)
-      diffmask |= CTState | CTEnabled;
-    if (old->second->state != PVR_TIMER_STATE_ABORTED && old->second->state != PVR_TIMER_STATE_CANCELLED
-            && (timer.state == PVR_TIMER_STATE_ABORTED || timer.state == PVR_TIMER_STATE_CANCELLED))
-      diffmask |= CTState;
+    newTimer.bIsRepeating = true;
+    newTimer.iWeekdays = old->second->iWeekdays;
   }
+
+  if (old->second->iClientChannelUid != newTimer.iClientChannelUid)
+    diffmask |= CTTimer;
+  if (old->second->bIsRepeating != newTimer.bIsRepeating || old->second->iWeekdays != newTimer.iWeekdays)
+    diffmask |= CTTimer;
+  if (old->second->startTime != newTimer.startTime || old->second->endTime != newTimer.endTime)
+    diffmask |= CTTimer;
+  if (old->second->iPriority != newTimer.iPriority)
+    diffmask |= CTTimer;
+  if (strcmp(old->second->strTitle, newTimer.strTitle) != 0)
+    diffmask |= CTTimer;
+  if ((old->second->state == PVR_TIMER_STATE_ABORTED || old->second->state == PVR_TIMER_STATE_CANCELLED)
+          && newTimer.state != PVR_TIMER_STATE_ABORTED && newTimer.state != PVR_TIMER_STATE_CANCELLED)
+    diffmask |= CTState | CTEnabled;
+  if (old->second->state != PVR_TIMER_STATE_ABORTED && old->second->state != PVR_TIMER_STATE_CANCELLED
+          && (newTimer.state == PVR_TIMER_STATE_ABORTED || newTimer.state == PVR_TIMER_STATE_CANCELLED))
+    diffmask |= CTState;
 
   if (diffmask == 0)
     return PVR_ERROR_NO_ERROR;
@@ -1630,25 +1639,25 @@ PVR_ERROR PVRClientMythTV::UpdateTimer(const PVR_TIMER &timer)
     // Update would failed if rule is an override. So continue anyway and enable.
     if ((diffmask & CTTimer))
     {
-        MythRecordingRule rule = PVRtoMythRecordingRule(timer);
-        ret = m_scheduleManager->UpdateRecording(timer.iClientIndex, rule);
+        MythRecordingRule rule = PVRtoMythRecordingRule(newTimer);
+        ret = m_scheduleManager->UpdateRecording(newTimer.iClientIndex, rule);
     }
     else
       ret = MythScheduleManager::MSM_ERROR_SUCCESS;
     if (ret != MythScheduleManager::MSM_ERROR_FAILED)
-      ret = m_scheduleManager->EnableRecording(timer.iClientIndex);
+      ret = m_scheduleManager->EnableRecording(newTimer.iClientIndex);
   }
   else if ((diffmask & CTState) && !(diffmask & CTEnabled))
   {
     // Timer was enabled and will be disabled. Disabling could be overriden rule.
     // So don't check timer update, disable only.
-    ret = m_scheduleManager->DisableRecording(timer.iClientIndex);
+    ret = m_scheduleManager->DisableRecording(newTimer.iClientIndex);
   }
   else if (!(diffmask & CTState) && (diffmask & CTTimer))
   {
     // State doesn't change.
-    MythRecordingRule rule = PVRtoMythRecordingRule(timer);
-    ret = m_scheduleManager->UpdateRecording(timer.iClientIndex, rule);
+    MythRecordingRule rule = PVRtoMythRecordingRule(newTimer);
+    ret = m_scheduleManager->UpdateRecording(newTimer.iClientIndex, rule);
   }
 
   if (ret == MythScheduleManager::MSM_ERROR_FAILED)
