@@ -71,6 +71,7 @@ public:
   bool HasBookmark() const;
   uint32_t ChannelID() const;
   std::string ChannelName() const;
+  std::string Callsign() const;
   RecordStatus Status() const;
   std::string RecordingGroup() const;
   uint32_t RecordID() const;

@@ -268,6 +268,12 @@ std::string MythProgramInfo::ChannelName() const
   return (m_proginfo ? m_proginfo->channel.channelName : "");
 }
 
+std::string MythProgramInfo::Callsign() const
+{
+  return (m_proginfo ? m_proginfo->channel.callSign : "");
+}
+
+
 MythProgramInfo::RecordStatus MythProgramInfo::Status() const
 {
   return (m_proginfo ? (RecordStatus)m_proginfo->recording.status : Myth::RS_UNKNOWN);
