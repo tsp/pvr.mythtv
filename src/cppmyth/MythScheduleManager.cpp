@@ -275,8 +275,8 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::DisableRecording(unsigned in
   RecordingRuleNodePtr node = this->FindRuleById(recording->RecordID());
   if (node)
   {
-    XBMC->Log(LOG_DEBUG, "%s - %u : %s:%s on channel %s ProgramID %s",
-              __FUNCTION__, index, recording->Title().c_str(), recording->Subtitle().c_str(), recording->Callsign().c_str()), recording->ProgramID().c_str();
+    XBMC->Log(LOG_DEBUG, "%s - %u : %s:%s on channel %s program %s",
+              __FUNCTION__, index, recording->Title().c_str(), recording->Subtitle().c_str(), recording->Callsign().c_str(), recording->UID().c_str());
     XBMC->Log(LOG_DEBUG, "%s - %u : Found rule %u type %d with recording status %i",
               __FUNCTION__, index, (unsigned)node->m_rule.RecordID(), (int)node->m_rule.Type(), recording->Status());
     int method = METHOD_UNKNOWN;
@@ -384,8 +384,8 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::EnableRecording(unsigned int
   RecordingRuleNodePtr node = this->FindRuleById(recording->RecordID());
   if (node)
   {
-    XBMC->Log(LOG_DEBUG, "%s - %u : %s:%s on channel %s ProgramID %s",
-              __FUNCTION__, index, recording->Title().c_str(), recording->Subtitle().c_str(), recording->Callsign().c_str()), recording->ProgramID().c_str();
+    XBMC->Log(LOG_DEBUG, "%s - %u : %s:%s on channel %s program %s",
+              __FUNCTION__, index, recording->Title().c_str(), recording->Subtitle().c_str(), recording->Callsign().c_str(), recording->UID().c_str());
     XBMC->Log(LOG_DEBUG, "%s - %u : Found rule %u type %d disabled by status %i",
               __FUNCTION__, index, (unsigned)node->m_rule.RecordID(), (int)node->m_rule.Type(), recording->Status());
     int method = METHOD_UNKNOWN;
