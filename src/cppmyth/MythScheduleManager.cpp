@@ -169,6 +169,8 @@ ScheduleList MythScheduleManager::GetUpcomingRecordings()
                   it->second->Title().c_str(), it->second->Subtitle().c_str(), it->second->ChannelName().c_str(), it->second->Status(), m_showNotRecording);
         continue;
       }
+    default:
+      break;
     }
 
     recordings.push_back(std::make_pair(it->first, it->second));
@@ -424,6 +426,8 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::EnableRecording(unsigned int
           case Myth::RT_FindWeeklyRecord:
             // Is it inactive ? Try to enable rule
             method = METHOD_UPDATE_INACTIVE;
+            break;
+          default:
             break;
         }
         break;
