@@ -1,5 +1,5 @@
-v1.9.22-53 (Backported from KODI release)
-- Sync cppmyth upstream (1.5.1)
+v1.9.22-55 (Backported from KODI release)
+- Sync cppmyth upstream (1.5.1.1)
 - Sync cppmyth upstream (1.5.0)
 - updated to use new libplatform-dev
 - Support protocol 0.28-pre:86
