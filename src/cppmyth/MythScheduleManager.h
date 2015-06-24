@@ -82,6 +82,7 @@ public:
   ~MythScheduleManager();
 
   // Called by GetTimers
+  unsigned GetUpcomingCount() const;
   ScheduleList GetUpcomingRecordings();
 
   // Called by AddTimer
