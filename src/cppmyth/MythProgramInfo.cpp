@@ -198,6 +198,11 @@ std::string MythProgramInfo::ProgramID() const
   return (m_proginfo ? m_proginfo->programId : "");
 }
 
+std::string MythProgramInfo::SerieID() const
+{
+  return (m_proginfo ? m_proginfo->seriesId : "");
+}
+
 std::string MythProgramInfo::Title() const
 {
   return (m_proginfo ? m_proginfo->title : "");
@@ -317,4 +322,9 @@ std::string MythProgramInfo::Inetref() const
 uint16_t MythProgramInfo::Season() const
 {
   return (m_proginfo ? m_proginfo->season : 0);
+}
+
+uint16_t MythProgramInfo::Episode() const
+{
+  return (m_proginfo ? m_proginfo->episode : 0);
 }
