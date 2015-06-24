@@ -148,6 +148,70 @@ uint32_t MythScheduleManager::MakeIndex(const ScheduledPtr &scheduled) const
   return index;
 }
 
+MythRecordingRule MythScheduleManager::MakeDontRecord(const MythRecordingRule& rule, const ScheduledPtr& recording)
+{
+  MythRecordingRule modifier = rule.DuplicateRecordingRule();
+  // Do the same as backend even we know the modifier will be rejected for manual rule:
+  // Don't know if this behavior is a bug issue or desired: cf libmythtv/recordingrule.cpp
+  if (modifier.SearchType() != Myth::ST_ManualSearch)
+    modifier.SetSearchType(Myth::ST_NoSearch);
+
+  modifier.SetType(Myth::RT_DontRecord);
+  modifier.SetParentID(modifier.RecordID());
+  modifier.SetRecordID(0);
+  modifier.SetInactive(false);
+  // Assign recording info
+  modifier.SetTitle(recording->Title());
+  modifier.SetSubtitle(recording->Subtitle());
+  modifier.SetDescription(recording->Description());
+  modifier.SetChannelID(recording->ChannelID());
+  modifier.SetCallsign(recording->Callsign());
+  modifier.SetStartTime(recording->StartTime());
+  modifier.SetEndTime(recording->EndTime());
+  modifier.SetSeriesID(recording->SerieID());
+  modifier.SetProgramID(recording->ProgramID());
+  modifier.SetCategory(recording->Category());
+  if (rule.InetRef().empty())
+  {
+    modifier.SetInerRef(recording->Inetref());
+    modifier.SetSeason(recording->Season());
+    modifier.SetEpisode(recording->Episode());
+  }
+  return modifier;
+}
+
+MythRecordingRule MythScheduleManager::MakeOverride(const MythRecordingRule& rule, const ScheduledPtr& recording)
+{
+  MythRecordingRule modifier = rule.DuplicateRecordingRule();
+  // Do the same as backend even we know the modifier will be rejected for manual rule:
+  // Don't know if this behavior is a bug issue or desired: cf libmythtv/recordingrule.cpp
+  if (modifier.SearchType() != Myth::ST_ManualSearch)
+    modifier.SetSearchType(Myth::ST_NoSearch);
+
+  modifier.SetType(Myth::RT_OverrideRecord);
+  modifier.SetParentID(modifier.RecordID());
+  modifier.SetRecordID(0);
+  modifier.SetInactive(false);
+  // Assign recording info
+  modifier.SetTitle(recording->Title());
+  modifier.SetSubtitle(recording->Subtitle());
+  modifier.SetDescription(recording->Description());
+  modifier.SetChannelID(recording->ChannelID());
+  modifier.SetCallsign(recording->Callsign());
+  modifier.SetStartTime(recording->StartTime());
+  modifier.SetEndTime(recording->EndTime());
+  modifier.SetSeriesID(recording->SerieID());
+  modifier.SetProgramID(recording->ProgramID());
+  modifier.SetCategory(recording->Category());
+  if (rule.InetRef().empty())
+  {
+    modifier.SetInerRef(recording->Inetref());
+    modifier.SetSeason(recording->Season());
+    modifier.SetEpisode(recording->Episode());
+  }
+  return modifier;
+}
+
 ScheduleList MythScheduleManager::GetUpcomingRecordings()
 {
   ScheduleList recordings;
@@ -343,18 +407,7 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::DisableRecording(unsigned in
     }
     if (method == METHOD_CREATE_OVERRIDE)
     {
-      handle.SetRecordID(0);
-      handle.SetInactive(false);
-      handle.SetType(Myth::RT_DontRecord);
-      handle.SetStartTime(recording->StartTime());
-      handle.SetEndTime(recording->EndTime());
-      handle.SetChannelID(recording->ChannelID());
-      handle.SetCallsign(recording->Callsign()); //Fix Any Channel rule over-ride
-      handle.SetTitle(recording->Title());
-      handle.SetSubtitle(recording->Subtitle()); //Not necessary but makes rule easier to read in mythweb
-      handle.SetProgramID(recording->ProgramID()); //Make sure it's the same item
-      handle.SetSearchType(Myth::ST_NoSearch); //Fix over-ride of power searches
-      handle.SetParentID(node->m_rule.RecordID());
+      handle = MakeDontRecord(handle, recording);
       XBMC->Log(LOG_DEBUG, "%s - %u : Creating Override for %u (%s: %s) on %i (%s)"
                 , __FUNCTION__, index, (unsigned)handle.ParentID(), handle.Title().c_str(),
                 handle.Subtitle().c_str(), handle.ChannelID(), handle.Callsign().c_str());
@@ -446,18 +499,7 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::EnableRecording(unsigned int
     }
     if (method == METHOD_CREATE_OVERRIDE)
     {
-      handle.SetRecordID(0);
-      handle.SetInactive(false);
-      handle.SetType(Myth::RT_OverrideRecord);
-      handle.SetStartTime(recording->StartTime());
-      handle.SetEndTime(recording->EndTime());
-      handle.SetChannelID(recording->ChannelID());
-      handle.SetCallsign(recording->Callsign()); //Fix Any Channel rule over-ride
-      handle.SetTitle(recording->Title());
-      handle.SetSubtitle(recording->Subtitle()); //Not necessary but makes rule easier to read in mythweb
-      handle.SetProgramID(recording->ProgramID()); //Make sure it's the same item
-      handle.SetSearchType(Myth::ST_NoSearch); //Fix over-ride of power searches
-      handle.SetParentID(node->m_rule.RecordID());
+      handle = MakeOverride(handle, recording);
       XBMC->Log(LOG_DEBUG, "%s - %u : Creating Override for %u (%s:%s) on %i (%s)"
                 , __FUNCTION__, index, (unsigned)handle.ParentID(), handle.Title().c_str(),
                 handle.Subtitle().c_str(), handle.ChannelID(), handle.Callsign().c_str());
@@ -565,18 +607,7 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::UpdateRecording(unsigned int
     }
     if (method == METHOD_CREATE_OVERRIDE)
     {
-      handle.SetRecordID(0);
-      handle.SetInactive(false);
-      handle.SetType(Myth::RT_OverrideRecord);
-      handle.SetStartTime(recording->StartTime());
-      handle.SetEndTime(recording->EndTime());
-      handle.SetChannelID(recording->ChannelID());
-      handle.SetCallsign(recording->Callsign()); //Fix Any Channel rule over-ride
-      handle.SetTitle(recording->Title());
-      handle.SetSubtitle(recording->Subtitle()); //Not necessary but makes rule easier to read in mythweb (contains rule for powersearches)
-      handle.SetProgramID(recording->ProgramID()); //Make sure it's the same item
-      handle.SetSearchType(Myth::ST_NoSearch); //Fix over-ride of power searches
-      handle.SetParentID(node->m_rule.RecordID());
+      handle = MakeOverride(handle, recording);
       XBMC->Log(LOG_DEBUG, "%s - %u : Creating Override for %u (%s: %s) on %i (%s)"
                 , __FUNCTION__, index, (unsigned)node->m_rule.RecordID(), node->m_rule.Title().c_str(),
                 node->m_rule.Subtitle().c_str(), recording->ChannelID(), recording->Callsign().c_str());
