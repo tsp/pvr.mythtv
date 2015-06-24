@@ -1262,8 +1262,9 @@ int PVRClientMythTV::GetTimersAmount(void)
   if (g_bExtraDebug)
     XBMC->Log(LOG_DEBUG, "%s", __FUNCTION__);
 
-  ScheduleList upcomingRecordings = m_scheduleManager->GetUpcomingRecordings();
-  return upcomingRecordings.size();
+  if (m_scheduleManager)
+    return m_scheduleManager->GetUpcomingCount();
+  return 0;
 }
 
 PVR_ERROR PVRClientMythTV::GetTimers(ADDON_HANDLE handle)
