@@ -1370,10 +1370,10 @@ PVR_ERROR PVRClientMythTV::GetTimers(ADDON_HANDLE handle)
     std::string title = it->second->Title();
     if (!rulemarker.empty())
       title.append(" ").append(rulemarker);
-    PVR_STRCPY(tag.strTitle, MakeProgramTitle(title, it->second->Subtitle()).c_str());
+    PVR_STRCPY(tag.strTitle, title.c_str());
 
     // Summary
-    PVR_STRCPY(tag.strSummary, it->second->Description().c_str());
+    PVR_STRCPY(tag.strSummary, "");
 
     // Unimplemented
     tag.iEpgUid = 0;
