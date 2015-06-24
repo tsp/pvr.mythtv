@@ -1,5 +1,10 @@
+v1.12.23
+- Set of fixes for timers
+- Sync cppmyth upstream (1.5.1.2)
+
 v1.12.22
 - Sync cppmyth upstream (1.5.1.1)
+
 v1.12.21
 - Sync cppmyth upstream (1.5.1)
 
