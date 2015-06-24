@@ -1,4 +1,6 @@
-v1.9.22-55 (Backported from KODI release)
+v1.9.22-56 (Backported from KODI release)
+- Set of fixes for timers
+- Sync cppmyth upstream (1.5.1.2)
 - Sync cppmyth upstream (1.5.1.1)
 - Sync cppmyth upstream (1.5.0)
 - updated to use new libplatform-dev
