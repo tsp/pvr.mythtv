@@ -1433,7 +1433,7 @@ PVR_ERROR PVRClientMythTV::GetTimers(ADDON_HANDLE handle)
     tag.startTime = it->second->StartTime();
     tag.endTime = it->second->EndTime();
     tag.iClientChannelUid = FindPVRChannelUid(it->second->ChannelID());
-    tag.iPriority = it->second->Priority();
+    tag.iPriority = ((it->second->Priority() < -49 ? -49 : (it->second->Priority() > 50 ? 50 : it->second->Priority()))) + 50;
     int genre = m_categories.Category(it->second->Category());
     tag.iGenreSubType = genre & 0x0F;
     tag.iGenreType = genre & 0xF0;
@@ -1725,6 +1725,7 @@ MythRecordingRule PVRClientMythTV::PVRtoMythRecordingRule(const PVR_TIMER &timer
     rule.SetStartTime(st);
     rule.SetEndTime(et);
     rule.SetTitle(timer.strTitle);
+    rule.SetDescription(timer.strTitle);
     rule.SetCategory(m_categories.Category(timer.iGenreType));
     rule.SetChannelID(timer.iClientChannelUid);
     rule.SetCallsign(ch.Callsign());
@@ -1736,7 +1737,7 @@ MythRecordingRule PVRClientMythTV::PVRtoMythRecordingRule(const PVR_TIMER &timer
   // Override template with PVR settings
   rule.SetStartOffset(rule.StartOffset() + timer.iMarginStart);
   rule.SetEndOffset(rule.EndOffset() + timer.iMarginEnd);
-  rule.SetPriority(timer.iPriority);
+  rule.SetPriority(timer.iPriority - 50); // range is -49,+50
   rule.SetInactive(timer.state == PVR_TIMER_STATE_ABORTED || timer.state ==  PVR_TIMER_STATE_CANCELLED);
   return rule;
 }
