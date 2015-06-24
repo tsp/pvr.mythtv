@@ -212,6 +212,12 @@ MythRecordingRule MythScheduleManager::MakeOverride(const MythRecordingRule& rul
   return modifier;
 }
 
+unsigned MythScheduleManager::GetUpcomingCount() const
+{
+  CLockObject lock(m_lock);
+  return (unsigned)m_recordings.size();
+}
+
 ScheduleList MythScheduleManager::GetUpcomingRecordings()
 {
   ScheduleList recordings;
