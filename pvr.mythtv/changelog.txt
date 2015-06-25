@@ -1,3 +1,6 @@
+v1.12.24
+- Fix cppmyth crash on thread stop
+
 v1.12.23
 - Set of fixes for timers
 - Sync cppmyth upstream (1.5.1.2)
