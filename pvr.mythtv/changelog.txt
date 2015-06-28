@@ -3,6 +3,9 @@ v2.3.0
 - Set of fixes for timers
 - Sync cppmyth upstream (1.5.1.3)
 
+v2.2.2
+- Updated language files from Transifex
+
 v2.2.1
 - Support protocol 0.28-pre:86
 - Sync cppmyth upstream (1.5.0)
