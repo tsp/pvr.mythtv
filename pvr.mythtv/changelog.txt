@@ -3,6 +3,9 @@ v2.3.0
 - Set of fixes for timers
 - Sync cppmyth upstream (1.5.1.3)
 
+v2.2.3
+- libplatform dependency update
+
 v2.2.2
 - Updated language files from Transifex
 
