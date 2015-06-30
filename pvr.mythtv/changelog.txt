@@ -1,3 +1,6 @@
+v1.12.26
+- AVINFO: exit on parse error
+
 v1.12.25
 - Fix override of rule end offset with 0
 - Sync cppmyth upstream (1.5.1.3)
