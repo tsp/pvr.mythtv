@@ -1,4 +1,4 @@
-Source: kodi-pvr-mythtv
+Source: kodi-pvr-mythtv-isengard
 Priority: extra
 Maintainer: janbar <jlbarriere68@gmail.com>
 Build-Depends: debhelper (>= 9.0.0), cmake
@@ -6,14 +6,14 @@ Standards-Version: 3.9.4
 Section: libs
 Homepage: https://github.com/janbar/pvr.mythtv
 
-Package: kodi-pvr-mythtv
+Package: kodi-pvr-mythtv-isengard
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: MythTV PVR for Kodi
  MythTV PVR addon for Kodi
 
-Package: kodi-pvr-mythtv-dbg
+Package: kodi-pvr-mythtv-isengard-dbg
 Section: debug
 Architecture: any
 Depends: ${misc:Depends}
