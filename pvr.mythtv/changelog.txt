@@ -1,3 +1,9 @@
+v2.4.0
+- Don't apply category overtime nil (0)
+- AVINFO: exit on parse error
+- Fix race condition on opening recorded
+- Recorded stream: make shared to fix race condition
+
 v2.3.0
 - Fix crash on thread stop
 - Set of fixes for timers
