@@ -2,7 +2,7 @@ project(pvr.mythtv)
 
 cmake_minimum_required(VERSION 2.6)
 
-set(APP_VERSION_MAJOR "15" CACHE string "Application version major")
+set(APP_VERSION_MAJOR "16" CACHE string "Application version major")
 set(APP_VERSION_MINOR "0" CACHE string "Application verison minor")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
