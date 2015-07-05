@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/janbar/pvr.mythtv.png?branch=isengard)](http://travis-ci.org/janbar/pvr.mythtv)
+
 ## Building
 
 ### Linux, BSD
