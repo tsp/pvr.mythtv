@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/janbar/pvr.mythtv.png?branch=doityourself)](http://travis-ci.org/janbar/pvr.mythtv) [![Coverity Scan Build Status](https://scan.coverity.com/projects/3115/badge.svg)](https://scan.coverity.com/projects/3115)
+
 ## Building
 
 ### Linux, BSD
