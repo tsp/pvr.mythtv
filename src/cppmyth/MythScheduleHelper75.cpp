@@ -805,7 +805,6 @@ MythRecordingRule MythScheduleHelper75::NewFromTemplate(const MythEPGInfo& epgIn
     rule.SetTranscoder(g_iRecTranscoder);
     // set defaults
     rule.SetPriority(GetRulePriorityDefault());
-    rule.SetAutoExpire(GetRuleExpirationDefault());
     rule.SetDuplicateControlMethod(static_cast<Myth::DM_t>(GetRuleDupMethodDefault()));
     rule.SetCheckDuplicatesInType(Myth::DI_InAll);
     rule.SetRecordingGroup(GetRuleRecordingGroupName(GetRuleRecordingGroupDefault()));
