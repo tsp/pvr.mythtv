@@ -1540,7 +1540,7 @@ PVR_ERROR PVRClientMythTV::GetTimers(ADDON_HANDLE handle)
     tag.iRecordingGroup = (*it)->recordingGroup;
     tag.firstDay = 0; // using startTime
     tag.iWeekdays = PVR_WEEKDAY_NONE; // not implemented
-    tag.iPreventDuplicateEpisodes = (*it)->dupMethod;
+    tag.iPreventDuplicateEpisodes = static_cast<unsigned>((*it)->dupMethod);
     if ((*it)->epgCheck)
       tag.iEpgUid = MythEPGInfo::MakeBroadcastID(FindPVRChannelUid((*it)->chanid), (*it)->startTime);
     tag.iMarginStart = (*it)->startOffset;

@@ -21,9 +21,10 @@
 
 #include "MythScheduleManager.h"
 
-#define RECGROUP_DFLT_ID    0
-#define RECGROUP_DFLT_NAME  "Default"
-#define EXPIRATION_DFLT_ID  0
+#define RECGROUP_DFLT_ID            0
+#define RECGROUP_DFLT_NAME          "Default"
+#define EXPIRATION_NEVER_EXPIRE_ID  0
+#define EXPIRATION_ALLOW_EXPIRE_ID  1
 
 // No helper
 
@@ -35,11 +36,11 @@ public:
   virtual const MythScheduleManager::RulePriorityList& GetRulePriorityList() const;
   virtual int GetRulePriorityDefaultId() const { return 0; }
   virtual const MythScheduleManager::RuleDupMethodList& GetRuleDupMethodList() const;
-  virtual int GetRuleDupMethodDefaultId() const { return Myth::DM_CheckNone; }
+  virtual int GetRuleDupMethodDefaultId() const { return static_cast<int>(Myth::DM_CheckNone); }
   virtual const MythScheduleManager::RuleExpirationList& GetRuleExpirationList() const;
-  virtual int GetRuleExpirationId(bool autoexpire, int maxepisodes, bool newest) const;
+  virtual int GetRuleExpirationId(const MythScheduleManager::RuleExpiration& expiration) const;
   virtual const MythScheduleManager::RuleExpiration& GetRuleExpiration(int id) const;
-  virtual int GetRuleExpirationDefaultId() const { return EXPIRATION_DFLT_ID; }
+  virtual int GetRuleExpirationDefaultId() const { return EXPIRATION_NEVER_EXPIRE_ID; }
   virtual const MythScheduleManager::RuleRecordingGroupList& GetRuleRecordingGroupList() const;
   virtual int GetRuleRecordingGroupId(const std::string& name) const;
   virtual const std::string& GetRuleRecordingGroupName(int id) const;
