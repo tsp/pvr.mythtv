@@ -91,7 +91,7 @@ int MythScheduleHelperNoHelper::GetRuleExpirationId(const MythScheduleManager::R
   std::map<uint32_t, int>::const_iterator it = _map.find(expiration_key(expiration));
   if (it != _map.end())
     return it->second;
-  return EXPIRATION_NEVER_EXPIRE_ID;
+  return GetRuleExpirationDefaultId();
 }
 
 const MythScheduleManager::RuleExpiration& MythScheduleHelperNoHelper::GetRuleExpiration(int id) const
