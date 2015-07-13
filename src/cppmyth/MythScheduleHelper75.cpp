@@ -403,20 +403,31 @@ const MythScheduleManager::RuleRecordingGroupList& MythScheduleHelper75::GetRule
   static MythScheduleManager::RuleRecordingGroupList _list;
   if (!_init && m_control)
   {
-    int index = RECGROUP_DFLT_ID;
+    int count = 0, index = RECGROUP_DFLT_ID;
     _init = true;
     Myth::StringListPtr strl = m_control->GetRecGroupList();
     // First add default group
     for (Myth::StringList::const_iterator it = strl->begin(); it != strl->end(); ++it)
     {
       if (*it == RECGROUP_DFLT_NAME)
+      {
         _list.push_back(std::make_pair(index++, RECGROUP_DFLT_NAME));
+        ++count;
+      }
     }
     // Then others
     for (Myth::StringList::const_iterator it = strl->begin(); it != strl->end(); ++it)
     {
       if (*it != RECGROUP_DFLT_NAME)
+      {
+        if (count == PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE)
+        {
+          XBMC->Log(LOG_NOTICE, "75::%s: List overflow (%d): %u remaining value(s) are not loaded", __FUNCTION__, count, (unsigned)(strl->size() - count));
+          break;
+        }
         _list.push_back(std::make_pair(index++, *it));
+        ++count;
+      }
     }
   }
   return _list;
