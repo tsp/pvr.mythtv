@@ -33,17 +33,17 @@ public:
 
   virtual const std::vector<MythScheduleManager::TimerType>& GetTimerTypes() const;
   virtual const MythScheduleManager::RulePriorityList& GetRulePriorityList() const;
-  virtual int GetRulePriorityDefault() const { return 0; }
+  virtual int GetRulePriorityDefaultId() const { return 0; }
   virtual const MythScheduleManager::RuleDupMethodList& GetRuleDupMethodList() const;
-  virtual int GetRuleDupMethodDefault() const { return Myth::DM_CheckNone; }
+  virtual int GetRuleDupMethodDefaultId() const { return Myth::DM_CheckNone; }
   virtual const MythScheduleManager::RuleExpirationList& GetRuleExpirationList() const;
   virtual int GetRuleExpirationId(bool autoexpire, int maxepisodes, bool newest) const;
   virtual const MythScheduleManager::RuleExpiration& GetRuleExpiration(int id) const;
-  virtual int GetRuleExpirationDefault() const { return EXPIRATION_DFLT_ID; }
+  virtual int GetRuleExpirationDefaultId() const { return EXPIRATION_DFLT_ID; }
   virtual const MythScheduleManager::RuleRecordingGroupList& GetRuleRecordingGroupList() const;
   virtual int GetRuleRecordingGroupId(const std::string& name) const;
   virtual const std::string& GetRuleRecordingGroupName(int id) const;
-  virtual int GetRuleRecordingGroupDefault() const { return RECGROUP_DFLT_ID; }
+  virtual int GetRuleRecordingGroupDefaultId() const { return RECGROUP_DFLT_ID; }
 
   virtual bool SameTimeslot(const MythRecordingRule& first, const MythRecordingRule& second) const;
   virtual bool FillTimerEntryWithRule(MythTimerEntry& entry, const MythRecordingRuleNode& node) const;

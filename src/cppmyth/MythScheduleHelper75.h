@@ -33,9 +33,9 @@ public:
   virtual const std::vector<MythScheduleManager::TimerType>& GetTimerTypes() const;
   virtual const MythScheduleManager::RulePriorityList& GetRulePriorityList() const;
   virtual const MythScheduleManager::RuleDupMethodList& GetRuleDupMethodList() const;
-  virtual int GetRuleDupMethodDefault() const { return Myth::DM_CheckSubtitleThenDescription; }
+  virtual int GetRuleDupMethodDefaultId() const { return Myth::DM_CheckSubtitleThenDescription; }
   virtual const MythScheduleManager::RuleExpirationList& GetRuleExpirationList() const;
-  virtual int GetRuleExpirationDefault() const { return 1; }
+  virtual int GetRuleExpirationDefaultId() const { return 1; }
   virtual const MythScheduleManager::RuleRecordingGroupList& GetRuleRecordingGroupList() const;
 
   virtual bool SameTimeslot(const MythRecordingRule& first, const MythRecordingRule& second) const;

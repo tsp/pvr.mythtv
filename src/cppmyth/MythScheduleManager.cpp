@@ -959,9 +959,9 @@ const MythScheduleManager::RulePriorityList& MythScheduleManager::GetRulePriorit
   return m_versionHelper->GetRulePriorityList();
 }
 
-int MythScheduleManager::GetRulePriorityDefault()
+int MythScheduleManager::GetRulePriorityDefaultId()
 {
-  return m_versionHelper->GetRulePriorityDefault();
+  return m_versionHelper->GetRulePriorityDefaultId();
 }
 
 const MythScheduleManager::RuleDupMethodList& MythScheduleManager::GetRuleDupMethodList()
@@ -969,9 +969,9 @@ const MythScheduleManager::RuleDupMethodList& MythScheduleManager::GetRuleDupMet
   return m_versionHelper->GetRuleDupMethodList();
 }
 
-int MythScheduleManager::GetRuleDupMethodDefault()
+int MythScheduleManager::GetRuleDupMethodDefaultId()
 {
-  return m_versionHelper->GetRuleDupMethodDefault();
+  return m_versionHelper->GetRuleDupMethodDefaultId();
 }
 
 const MythScheduleManager::RuleExpirationList& MythScheduleManager::GetRuleExpirationList()
@@ -979,9 +979,9 @@ const MythScheduleManager::RuleExpirationList& MythScheduleManager::GetRuleExpir
   return m_versionHelper->GetRuleExpirationList();
 }
 
-int MythScheduleManager::GetRuleExpirationDefault()
+int MythScheduleManager::GetRuleExpirationDefaultId()
 {
-  return m_versionHelper->GetRuleExpirationDefault();
+  return m_versionHelper->GetRuleExpirationDefaultId();
 }
 
 const MythScheduleManager::RuleRecordingGroupList& MythScheduleManager::GetRuleRecordingGroupList()
@@ -989,9 +989,9 @@ const MythScheduleManager::RuleRecordingGroupList& MythScheduleManager::GetRuleR
   return m_versionHelper->GetRuleRecordingGroupList();
 }
 
-int MythScheduleManager::GetRuleRecordingGroupDefault()
+int MythScheduleManager::GetRuleRecordingGroupDefaultId()
 {
-  return m_versionHelper->GetRuleRecordingGroupDefault();
+  return m_versionHelper->GetRuleRecordingGroupDefaultId();
 }
 
 bool MythScheduleManager::FillTimerEntry(MythTimerEntry& entry, const MythRecordingRuleNode& node) const

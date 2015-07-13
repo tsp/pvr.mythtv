@@ -237,14 +237,14 @@ MythRecordingRule MythScheduleHelper76::NewFromTimer(const MythTimerEntry& entry
     // Override template with timer settings
     rule.SetStartOffset(rule.StartOffset() + entry.startOffset);
     rule.SetEndOffset(rule.EndOffset() + entry.endOffset);
-    if (entry.dupMethod != GetRuleDupMethodDefault())
+    if (entry.dupMethod != GetRuleDupMethodDefaultId())
     {
       rule.SetDuplicateControlMethod(entry.dupMethod);
       rule.SetCheckDuplicatesInType(Myth::DI_InAll);
     }
-    if (entry.priority != GetRulePriorityDefault())
+    if (entry.priority != GetRulePriorityDefaultId())
       rule.SetPriority(entry.priority);
-    if (entry.expiration != GetRuleExpirationDefault())
+    if (entry.expiration != GetRuleExpirationDefaultId())
     {
       const MythScheduleManager::RuleExpiration& exr = GetRuleExpiration(entry.expiration);
       rule.SetAutoExpire(exr.autoExpire);

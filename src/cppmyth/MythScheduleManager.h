@@ -196,13 +196,13 @@ public:
 
   const std::vector<TimerType>& GetTimerTypes();
   const RulePriorityList& GetRulePriorityList();
-  int GetRulePriorityDefault();
+  int GetRulePriorityDefaultId();
   const RuleDupMethodList& GetRuleDupMethodList();
-  int GetRuleDupMethodDefault();
+  int GetRuleDupMethodDefaultId();
   const RuleExpirationList& GetRuleExpirationList();
-  int GetRuleExpirationDefault();
+  int GetRuleExpirationDefaultId();
   const RuleRecordingGroupList& GetRuleRecordingGroupList();
-  int GetRuleRecordingGroupDefault();
+  int GetRuleRecordingGroupDefaultId();
 
   bool FillTimerEntry(MythTimerEntry& entry, const MythRecordingRuleNode& node) const;
   bool FillTimerEntry(MythTimerEntry& entry, const MythProgramInfo& recording) const;
@@ -222,13 +222,13 @@ public:
 
     virtual const std::vector<TimerType>& GetTimerTypes() const = 0;
     virtual const RulePriorityList& GetRulePriorityList() const = 0;
-    virtual int GetRulePriorityDefault() const = 0;
+    virtual int GetRulePriorityDefaultId() const = 0;
     virtual const RuleDupMethodList& GetRuleDupMethodList() const = 0;
-    virtual int GetRuleDupMethodDefault() const = 0;
+    virtual int GetRuleDupMethodDefaultId() const = 0;
     virtual const RuleExpirationList& GetRuleExpirationList() const = 0;
-    virtual int GetRuleExpirationDefault() const = 0;
+    virtual int GetRuleExpirationDefaultId() const = 0;
     virtual const RuleRecordingGroupList& GetRuleRecordingGroupList() const = 0;
-    virtual int GetRuleRecordingGroupDefault() const = 0;
+    virtual int GetRuleRecordingGroupDefaultId() const = 0;
 
     virtual bool SameTimeslot(const MythRecordingRule& first, const MythRecordingRule& second) const = 0;
     virtual bool FillTimerEntryWithRule(MythTimerEntry& entry, const MythRecordingRuleNode& node) const = 0;
