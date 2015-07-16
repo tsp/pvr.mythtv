@@ -1,3 +1,6 @@
+v2.4.2
+- fix GetStreamData: stream never filed
+
 v2.4.1
 - Don't apply category overtime nil (0)
 - AVINFO: exit on parse error
